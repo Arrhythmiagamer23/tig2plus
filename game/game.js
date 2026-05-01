@@ -46416,7 +46416,7 @@ var version = "v1.11.1";
           Fl = [
             {
               levelName: "Silverdust",
-              levelFileName: "lighthouse",
+              levelFileName: "silverdust",
               song: hl.songs.silverdust,
               unlockedByIndex: null,
               x: -240,
