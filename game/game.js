@@ -43944,6 +43944,7 @@ var version = "v1.11.1";
                 );
                 if (e) {
                   ((U.playerGradY = e.playerGradY),
+                    (U.jumping = U.flyingAnchor === null ? U.jumping : false),
                     (U.isGravity = 0),
                     xa.updateLayoutStateField(
                       "enemies",
