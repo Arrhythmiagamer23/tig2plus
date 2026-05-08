@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
   showcaseOnly = false;
 
-var version = "v1.11.1";
+var version = "v1.12.0";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -15876,6 +15876,7 @@ var version = "v1.11.1";
                   null !== (o = null == e ? void 0 : e.skipMissiles) &&
                   void 0 !== o &&
                   o,
+                isFade: e ? e.isFade || false : false,
                 isLaser: o == null ? false : e.isLaser,
               };
             },
@@ -15904,6 +15905,7 @@ var version = "v1.11.1";
                 isVoid: e == null ? false : e.isVoid || false,
                 isBoss: e == null ? false : e.isBoss || false,
                 isGround: e == null ? false : e.isGround || false,
+                isFade: e ? e.isFade || false : false,
                 rotation: 0,
                 skipMissiles: false,
                 snapSize: null == e ? void 0 : e.snapSize,
@@ -15934,6 +15936,7 @@ var version = "v1.11.1";
                 steel: e != undefined && (e?.steel || false),
                 isVoid: e != undefined && (e?.isVoid || false),
                 isBoss: e == undefined ? false : e?.isBoss || false,
+                isFade: e ? e.isFade || false : false,
                 skipMissiles: false,
                 snapSize: { offsetX: 7.5, offsetY: 7.5 },
               };
@@ -15969,6 +15972,7 @@ var version = "v1.11.1";
                   void 0 !== o &&
                   o,
                 isLaser: e == null ? false : e.isLaser,
+                isFade: e ? e.isFade || false : false,
                 snapSize: { offsetX: 7.5, offsetY: 7.5 },
               };
             },
@@ -18301,6 +18305,7 @@ var version = "v1.11.1";
                     (updated.rotation = obj.rotation),
                     (updated.skipMissiles = obj.skipMissiles),
                     (updated.isLaser = obj.isLaser),
+                    (updated.isFade = obj.isFade),
                     updated)
                   : Object.assign(Object.assign({}, obj), { y: trueY });
             }
@@ -19989,6 +19994,9 @@ var version = "v1.11.1";
             }
             return newY;
           },
+          fadeFunction = (s, i) => (
+            (s ? Math.min((Math.abs(s.playerX - i.x) - 150) / 120, 1) : 1) * 0.8
+          ),
           isSpecialTheme = (e) => e === "classic" || e === "infinite",
           Ja = makeSprite({
             render: ({ props: e }) => [
@@ -20019,6 +20027,7 @@ var version = "v1.11.1";
                           !(i == undefined ? false : i.init) &&
                           !i.isVoid &&
                           !i.isBoss &&
+                          !i.isFade &&
                           !(null == r ? void 0 : r.destroyed) &&
                           !r?.off),
                           (a.width = i.width * t),
@@ -20444,6 +20453,51 @@ var version = "v1.11.1";
                         }`;
                       },
                     }),
+                    imageArray({
+                      fileName: `images/themes/world3/block-white.png`,
+                      props: () => ({}),
+                      update: (a, i, n) => {
+                        var s, o;
+                        const r =
+                          null ===
+                            (o =
+                              null === (s = e.inGame) || void 0 === s
+                                ? void 0
+                                : s.blockStates) || void 0 === o
+                            ? void 0
+                            : o[n];
+                        ((a.show =
+                          !i?.steel &&
+                          !i?.isBoss &&
+                          !i?.isVoid &&
+                          i?.isFade &&
+                          !(null == r ? void 0 : r.destroyed)),
+                          (a.width = i.width * (41 / 30)),
+                          (a.height = i.height * (41 / 30)),
+                          (a.opacity = fadeFunction(s, i)),
+                          (a.x = i.x),
+                          (a.y = getBlockFallY(
+                            i.x,
+                            i.y,
+                            s && s.playerX,
+                            s && s.fallTypes,
+                            s && s.playerDir,
+                          )));
+                      },
+                      array: () => e.blocks,
+                      testId: (t, a) => {
+                        var i, n;
+                        return `Block-${
+                          null !==
+                            (n =
+                              null === (i = e.inGame) || void 0 === i
+                                ? void 0
+                                : i.indexes[a]) && void 0 !== n
+                            ? n
+                            : a
+                        }`;
+                      },
+                    }),
                   ];
                 },
               ),
@@ -20749,6 +20803,7 @@ var version = "v1.11.1";
                         ((a.show =
                           i.init === "red" &&
                           !i.isLaser &&
+                          !i.isFade &&
                           !(null == r ? void 0 : r.destroyed)),
                           (a.x = i.x),
                           (a.y = getBlockFallY(
@@ -20788,6 +20843,7 @@ var version = "v1.11.1";
                         ((a.show =
                           i.init === "red" &&
                           !i.isLaser &&
+                          !i.isFade &&
                           !(null == r ? void 0 : r.destroyed)),
                           (a.x = i.x),
                           (a.y = getBlockFallY(
@@ -20827,6 +20883,7 @@ var version = "v1.11.1";
                         ((a.show =
                           i.init === "blue" &&
                           !i.isLaser &&
+                          !i.isFade &&
                           !(null == r ? void 0 : r.destroyed)),
                           (a.x = i.x),
                           (a.y = getBlockFallY(
@@ -20866,6 +20923,7 @@ var version = "v1.11.1";
                         ((a.show =
                           i.init === "blue" &&
                           !i.isLaser &&
+                          !i.isFade &&
                           !(null == r ? void 0 : r.destroyed)),
                           (a.x = i.x),
                           (a.y = getBlockFallY(
@@ -20907,6 +20965,7 @@ var version = "v1.11.1";
                           (e.theme == "world2" ? i.width : 30) !==
                             $.miniSpikeWidth &&
                           !i.isLaser &&
+                          !i.isFade &&
                           !(null == r ? void 0 : r.destroyed)),
                           (a.x = i.x),
                           (a.y = getBlockFallY(
@@ -20948,7 +21007,49 @@ var version = "v1.11.1";
                           (e.theme == "world2" ? i.width : 30) ===
                             $.miniSpikeWidth &&
                           !i.isLaser &&
+                          !i.isFade &&
                           !(null == r ? void 0 : r.destroyed)),
+                          (a.x = i.x),
+                          (a.y = getBlockFallY(
+                            i.x,
+                            i.y,
+                            s && s.playerX,
+                            s && s.fallTypes,
+                            e.inGame && e.inGame.playerDir,
+                          )),
+                          (a.rotation = i.rotation),
+                          (a.width = i.width * t),
+                          (a.height = i.height * t));
+                      },
+                      array: () => e.spikes,
+                      testId: (t, a) => {
+                        var i;
+                        return `Spike-${
+                          null === (i = e.inGame) || void 0 === i
+                            ? void 0
+                            : i.indexes[a]
+                        }`;
+                      },
+                    }),
+                    imageArray({
+                      fileName: `images/themes/world3/spike-white.png`,
+                      props: () => ({}),
+                      update: (a, i, n) => {
+                        var s, o;
+                        const r =
+                          null ===
+                            (o =
+                              null === (s = e.inGame) || void 0 === s
+                                ? void 0
+                                : s.spikeStates) || void 0 === o
+                            ? void 0
+                            : s.spikeStates[n];
+                        ((a.show =
+                          !i.init &&
+                          !i.isLaser &&
+                          i.isFade &&
+                          !(null == r ? void 0 : r.destroyed)),
+                          (a.opacity = fadeFunction(s, i)),
                           (a.x = i.x),
                           (a.y = getBlockFallY(
                             i.x,
@@ -20987,6 +21088,7 @@ var version = "v1.11.1";
                         ((a.show =
                           !i.init &&
                           i.isLaser &&
+                          !i.isFade &&
                           !(null == r ? void 0 : r.destroyed)),
                           (a.x = i.x),
                           (a.y = getBlockFallY(
@@ -21092,7 +21194,7 @@ var version = "v1.11.1";
                                 )
                               : y(
                                   {
-                                    fileName: a.isLaser
+                                    fileName: a.isFade ? "images/themes/world3/spike-white.png" :a.isLaser
                                       ? `images/themes/${e.theme == "classic" ? "classic" : e.theme == "world2" ? "world2" : "world3"}/bottom/laser-line.png`
                                       : `images/themes/${e.theme}/spike.png`,
                                     width: a.width * (a.isLaser ? 1 : t),
@@ -37475,7 +37577,7 @@ var version = "v1.11.1";
                       options: [
                         {
                           name: "Spike",
-                          selected: !t.isLaser,
+                          selected: !t.isLaser && !t.isFade,
                           onPress: () => {
                             a.map((j) => {
                               e({
@@ -37485,6 +37587,7 @@ var version = "v1.11.1";
                                 set: (e) =>
                                   Object.assign(Object.assign({}, e), {
                                     isLaser: false,
+                                    isFade: false,
                                   }),
                               });
                             });
@@ -37503,6 +37606,25 @@ var version = "v1.11.1";
                                   Object.assign(Object.assign({}, e), {
                                     rotation: e.rotation % 90,
                                     isLaser: true,
+                                    isFade: false,
+                                  }),
+                              });
+                            });
+                          },
+                        },
+                        {
+                          name: "Invisible",
+                          selected: t.isFade,
+                          onPress: () => {
+                            a.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "spikes",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    isLaser: false,
+                                    isFade: true,
                                   }),
                               });
                             });
@@ -38135,7 +38257,7 @@ var version = "v1.11.1";
                       options: [
                         {
                           name: "Normal",
-                          selected: !t.steel && !t.isVoid && !t.isBoss,
+                          selected: !t.steel && !t.isVoid && !t.isBoss && !t.isFade,
                           onPress: () => {
                             a.map((j) => {
                               e({
@@ -38147,6 +38269,7 @@ var version = "v1.11.1";
                                     steel: false,
                                     isVoid: false,
                                     isBoss: false,
+                                    isFade: false,
                                   }),
                               });
                             });
@@ -38166,6 +38289,7 @@ var version = "v1.11.1";
                                     steel: true,
                                     isVoid: false,
                                     isBoss: false,
+                                    isFade: false,
                                   }),
                               });
                             });
@@ -38185,6 +38309,7 @@ var version = "v1.11.1";
                                     isVoid: true,
                                     steel: false,
                                     isBoss: false,
+                                    isFade: false,
                                   }),
                               });
                             });
@@ -38204,6 +38329,27 @@ var version = "v1.11.1";
                                     isVoid: false,
                                     steel: false,
                                     isBoss: true,
+                                    isFade: false,
+                                  }),
+                              });
+                            });
+                          },
+                        },
+                        {
+                          name: "Invisible",
+                          selected: t.isFade,
+                          onPress: () => {
+                            a.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "blocks",
+                                index: j,
+                                set: (l) =>
+                                  Object.assign(Object.assign({}, l), {
+                                    isVoid: false,
+                                    steel: false,
+                                    isBoss: false,
+                                    isFade: true,
                                   }),
                               });
                             });
@@ -48661,8 +48807,8 @@ var version = "v1.11.1";
                 Bc([Gc([mc, fc]), Gc([mc])]),
                 Oc(
                   Bc([
-                    Gc([fc, fc, _c(1), _c(0), nd.enum4]),
-                    Gc([fc, fc, _c(0), nd.enum4]),
+                    Gc([fc, fc, _c(1), _c(0), nd.enum5]),
+                    Gc([fc, fc, _c(0), nd.enum5]),
                     Gc([fc, fc, _c(1)]),
                     Gc([fc, fc]),
                   ]),
@@ -48675,11 +48821,11 @@ var version = "v1.11.1";
                       nd.enum4,
                       nd.enum2,
                       nd.enum2,
-                      nd.enum2,
+                      nd.enum3,
                       nd.enum2,
                       nd.enum3,
                     ]),
-                    Gc([fc, fc, nd.enum4, nd.enum2, nd.enum2, _c(1)]),
+                    Gc([fc, fc, nd.enum4, nd.enum2, nd.enum2, nd.enum3]),
                     Gc([fc, fc, nd.enum4, _c(0), _c(1)]),
                     Gc([fc, fc, nd.enum4, _c(1), _c(1)]),
                     Gc([fc, fc, nd.enum4, _c(1)]),
@@ -48813,8 +48959,8 @@ var version = "v1.11.1";
                 Bc([Gc([mc, fc]), Gc([mc])]),
                 Oc(
                   Bc([
-                    Gc([fc, fc, _c(1), _c(0), nd.enum4]),
-                    Gc([fc, fc, _c(0), nd.enum4]),
+                    Gc([fc, fc, _c(1), _c(0), nd.enum5]),
+                    Gc([fc, fc, _c(0), nd.enum5]),
                     Gc([fc, fc, _c(1)]),
                     Gc([fc, fc]),
                   ]),
@@ -49060,6 +49206,7 @@ var version = "v1.11.1";
                               steel: s == 1 ? true : false,
                               isVoid: s == 2 ? true : false,
                               isBoss: s == 3 ? true : false,
+                              isFade: s == 4 ? true : false,
                             })
                           : $.newBlock({
                               x: e,
@@ -49067,6 +49214,7 @@ var version = "v1.11.1";
                               steel: g == 1 ? true : false,
                               isVoid: g == 2 ? true : false,
                               isBoss: g == 3 ? true : false,
+                              isFade: g == 4 ? true : false,
                             });
                       })
                       .concat(
@@ -49090,6 +49238,7 @@ var version = "v1.11.1";
                               rotation: Hd[a],
                               skipMissiles: 1 === i,
                               isLaser: 1 === laser,
+                              isFade: 2 === laser,
                             })
                           : $.newSpike({
                               x: e,
@@ -49097,6 +49246,7 @@ var version = "v1.11.1";
                               rotation: Hd[a],
                               skipMissiles: 1 === i,
                               isLaser: 1 === laser,
+                              isFade: 2 === laser,
                             })
                         : $.newSwitchSpike({
                             x: e,
@@ -49104,6 +49254,7 @@ var version = "v1.11.1";
                             rotation: Hd[a],
                             skipMissiles: 1 === i,
                             isLaser: false,
+                            isFade: false,
                             init: ini == 0 ? "blue" : "red",
                             trigger: zd[tr],
                           }),
@@ -49269,20 +49420,20 @@ var version = "v1.11.1";
                         return !b.init;
                       })
                       .map((e) =>
-                        e.steel || e.isVoid || e.isBoss
+                        e.steel || e.isVoid || e.isBoss || e.isFade
                           ? e.width === $.miniBlockWidth
                             ? [
                                 e.x,
                                 e.y,
                                 1,
                                 0,
-                                +e.steel + +e.isVoid * 2 + +e.isBoss * 3,
+                                +e.steel + +e.isVoid * 2 + +e.isBoss * 3 + +e.isFade * 4,
                               ]
                             : [
                                 e.x,
                                 e.y,
                                 0,
-                                +e.steel + +e.isVoid * 2 + +e.isBoss * 3,
+                                +e.steel + +e.isVoid * 2 + +e.isBoss * 3 + +e.isFade * 4,
                               ]
                           : e.width === $.miniBlockWidth
                             ? [e.x, e.y, 1]
@@ -49300,14 +49451,14 @@ var version = "v1.11.1";
                             ru(e.init == "blue", ou),
                             ru(e.trigger, zd),
                           ]
-                        : e.isLaser
+                        : e.isLaser || e.isFade
                           ? [
                               e.x,
                               e.y,
                               ru(e.rotation, Hd),
                               e.skipMissiles ? 1 : 0,
                               +(e.width === $.miniSpikeWidth),
-                              1,
+                              e.isLaser ? 1 : 2,
                             ]
                           : e.width === $.miniSpikeWidth
                             ? [
@@ -49315,7 +49466,7 @@ var version = "v1.11.1";
                                 e.y,
                                 ru(e.rotation, Hd),
                                 e.skipMissiles ? 1 : 0,
-                                1,
+                                e.isLaser ? 1 : 2,
                               ]
                             : e.skipMissiles
                               ? [e.x, e.y, ru(e.rotation, Hd), 1]
