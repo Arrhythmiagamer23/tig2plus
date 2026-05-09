@@ -19995,7 +19995,7 @@ var version = "v1.12.0";
             return newY;
           },
           fadeFunction = (s, i) => (
-            (s ? Math.min((Math.abs(s.playerX - i.x) - 150) / 120, 1) : 1) * 0.8
+            (s ? s.crashed ? 1 : Math.min((Math.abs(s.playerX - i.x) - 150) / 120, 1) : 1) * 0.8
           ),
           isSpecialTheme = (e) => e === "classic" || e === "infinite",
           Ja = makeSprite({
@@ -42362,10 +42362,10 @@ var version = "v1.12.0";
                   isGravity: false,
                   fallTypes: [null, null],
                   flyingAnchor: null,
-                  boosterDebug: {
+                  boosterDebug: null, /*{
                     autopilot: {},
                     jumpIndicators: [],
-                  }
+                  }*/
                 };
           },
           el = function (e, t) {
@@ -49466,7 +49466,7 @@ var version = "v1.12.0";
                                 e.y,
                                 ru(e.rotation, Hd),
                                 e.skipMissiles ? 1 : 0,
-                                e.isLaser ? 1 : 2,
+                                1,
                               ]
                             : e.skipMissiles
                               ? [e.x, e.y, ru(e.rotation, Hd), 1]
@@ -59975,6 +59975,7 @@ var version = "v1.12.0";
                       (t.inGame.playerX = e.playerX),
                       (t.inGame.fallTypes = e.fallTypes),
                       (t.inGame.playerDir = e.playerDir),
+                      (t.inGame.crashed = e.crashed),
                       (t.inGame.gravity = e.gravity));
                     t.indexes = e.layoutStateIndex.blocks;
                   },
@@ -60004,6 +60005,7 @@ var version = "v1.12.0";
                       (t.inGame.df = e.df),
                       (t.inGame.playerX = e.playerX),
                       (t.inGame.playerY = e.playerY),
+                      (t.inGame.crashed = e.crashed),
                       (t.inGame.fallTypes = e.fallTypes),
                       (t.inGame.playerDir = e.playerDir),
                       (t.inGame.gravity = e.gravity));
