@@ -20536,7 +20536,36 @@ var version = "v1.12.1";
                                 e.inGame && e.inGame.playerDir,
                               )),
                               (a.opacity = n),
-                              void (a.show = !i.steel)
+                              void (a.show = !i.steel && !i.isFade)
+                            );
+                        }
+                        a.show = false;
+                      },
+                      array: () => e.blocks,
+                    }),
+                    imageArray({
+                      fileName: `images/themes/world3/block-white-light.png`,
+                      props: () => ({}),
+                      update: (a, i, n) => {
+                        const s = e.inGame.blockStates[n];
+                        if (s && !s.destroyed && s.hitFrame) {
+                          const n = B.zeroTo1(
+                            1 - (e.inGame.frame - s.hitFrame) / 20,
+                          );
+                          if (n > 0)
+                            return (
+                              (a.width = i.width * (41 / 30)),
+                              (a.height = i.height * (41 / 30)),
+                              (a.x = i.x),
+                              (a.y = getBlockFallY(
+                                i.x,
+                                i.y,
+                                e.inGame && e.inGame.playerX,
+                                e.inGame && e.inGame.fallTypes,
+                                e.inGame && e.inGame.playerDir,
+                              )),
+                              (a.opacity = n / 2),
+                              void (a.show = !i.steel && i.isFade)
                             );
                         }
                         a.show = false;
@@ -30650,6 +30679,7 @@ var version = "v1.12.1";
               `images/themes/${e.objects.switch}/switch-platform.png`,
               `images/themes/${e.objects.switch}/switch-button.png`,
               "images/themes/world3/block-white.png",
+              "images/themes/world3/block-white-light.png",
               "images/themes/world3/spike-white.png",
               "images/themes/classic/ground.png",
               "images/themes/infinite/ground.png",
