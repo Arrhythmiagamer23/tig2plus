@@ -17911,6 +17911,7 @@ var version = "v1.12.1";
               size: 30,
               author: "GatoNegro",
               trail: ct({ topColour: "#9f1960", bottomColour: "#691d96" }),
+
             },
             gd: {
               name: "Geometry Dash",
@@ -70119,6 +70120,7 @@ var version = "v1.12.1";
                           const a = t.defId.slice(5);
                           i[a] = {
                             name: e.name,
+                            author: e.author,
                             isSuperLevelPack: "levelPack" === e.category,
                           };
                         }
@@ -70187,8 +70189,15 @@ var version = "v1.12.1";
                   width: o.skin.size,
                   height: o.skin.size,
                   x: 110,
-                  y: t / 2 - 90,
+                  y: o.skin.author ? t / 2 - 80 : t / 2 - 90,
                   rotation: 30,
+                }),
+                n({
+                  text: o.skin.author ? ("by " + o.skin.author) : "",
+                  x: 110,
+                  y: t / 2 - 120,
+                  color: ve,
+                  font: { weight: 500 },
                 }),
                 Fo({
                   id: "EquipButton",
