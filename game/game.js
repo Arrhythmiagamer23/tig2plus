@@ -18212,7 +18212,7 @@ var version = "v1.12.1";
             world2Red: $t,
             world3: Zt,
             world3Red: ea,
-
+            virtual: Object.assign(Object.assign({}, Zt), {id: "virtual", name: "Virtual", player: Wt.skins.layla}),
             world4: aa,
             world4Boss: ia,
             world4Red: na,
@@ -57480,6 +57480,56 @@ var version = "v1.12.1";
                               array: () => a,
                               key: (e, t) => t,
                             }),
+                            Go.Single(
+                              {
+                                targetOpacity: (e.speedMultiplier - 1) / 10,
+                                sprite: (e) => [
+                                  p(
+                                    {
+                                      color: "#9D0808",
+                                      width: t.size.fullWidth,
+                                      height: t.size.fullHeight,
+                                    },
+                                    (a) => {
+                                      ((a.opacity = e.ref),
+                                        (a.width = t.size.fullWidth),
+                                        (a.height = t.size.fullHeight));
+                                    },
+                                  ),
+                                ],
+                              },
+                              (t) => {
+                                t.targetOpacity = Math.min(
+                                  0.5,
+                                  (e.speedMultiplier - 1) / 10,
+                                );
+                              },
+                            ),
+                            Go.Single(
+                              {
+                                targetOpacity: (1 - e.speedMultiplier) / 10,
+                                sprite: (e) => [
+                                  p(
+                                    {
+                                      color: "#40a5de",
+                                      width: t.size.fullWidth,
+                                      height: t.size.fullHeight,
+                                    },
+                                    (a) => {
+                                      ((a.opacity = e.ref),
+                                        (a.width = t.size.fullWidth),
+                                        (a.height = t.size.fullHeight));
+                                    },
+                                  ),
+                                ],
+                              },
+                              (t) => {
+                                t.targetOpacity = Math.min(
+                                  0.5,
+                                  (1 - e.speedMultiplier) / 10,
+                                );
+                              },
+                            ),
                           ];
                         case "synthwave":
                           return [
