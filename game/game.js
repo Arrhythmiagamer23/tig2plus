@@ -18212,7 +18212,7 @@ var version = "v1.12.1";
             world2Red: $t,
             world3: Zt,
             world3Red: ea,
-            virtual: Object.assign(Object.assign({}, Zt), {id: "virtual", name: "Virtual", player: Wt.skins.layla}),
+            virtual: Object.assign(Object.assign({}, Zt), {id: "virtual", name: "Virtual", player: Wt.skins.layla, hidden: true}),
             world4: aa,
             world4Boss: ia,
             world4Red: na,
@@ -41551,7 +41551,7 @@ var version = "v1.12.1";
                     );
                   },
                   features: e.features,
-                  themes: Object.values(ca),
+                  themes: Object.values(ca).filter(theme => !theme.hidden),
                   isLoading: e.isLoading,
                   x: -l / 2 + 50,
                   y: -45,
@@ -48755,6 +48755,7 @@ var version = "v1.12.1";
               (e[(e.Fighter = 15)] = "Fighter"));
             e[(e.Classic = 16)] = "Classic";
             e[(e.Infinite = 17)] = "Infinite";
+            e[(e.Virtual = 18)] = "Virtual";
           })(Od || (Od = {})),
           (function (e) {
             ((e[(e.Gun = 0)] = "Gun"),
@@ -48877,6 +48878,7 @@ var version = "v1.12.1";
               (e[(e.Fighter = 15)] = "Fighter"));
             e[(e.Classic = 16)] = "Classic";
             e[(e.Infinite = 17)] = "Infinite";
+            e[(e.Virtual = 18)] = "Virtual";
           })(xd || (xd = {})));
         const Bd = Gc([
             mc,
@@ -49750,6 +49752,7 @@ var version = "v1.12.1";
             [xd.Fighter]: "fighter",
             [xd.Classic]: "classic",
             [xd.Infinite]: "infinite",
+            [xd.Virtual]: "virtual",
           },
           Vd = {
             [Nd.Dragonfly]: hl.songs.dragonfly,
