@@ -30722,6 +30722,8 @@ var version = "v1.13.0";
               "images/themes/world1/arrow.png",
               "images/themes/world2/arrow.png",
               "images/themes/infinite/arrow.png",
+              "images/themes/world1/doubleJump.png",
+              "images/themes/infinite/doubleJump.png",
               "images/themes/world2/double-jump.png",
               `images/themes/${e.objects.spike == "classic" ? "classic" : e.objects.spike == "infinite" ? "infinite" : e.objects.spike == "world3" ? "world3" : "world1"}/saw-big.png`,
               `images/themes/${e.objects.spike == "classic" ? "classic" : e.objects.spike == "infinite" ? "infinite" : e.objects.spike == "world3" ? "world3" : "world1"}/saw-medium.png`,
@@ -34846,36 +34848,66 @@ var version = "v1.13.0";
                   switch (e.switchButton.affects) {
                     case "gravity":
                       return [
-                        y(
-                          {
-                            fileName: `images/themes/${e.theme == "infinite" ? "infinite" : e.theme == "world2" ? "world2" : "world1"}/arrow.png`,
-                            width: e.switchButton.width,
-                            height: e.switchButton.height,
-                          },
-                          (t) => {
-                            let time = 60 - a.justHitTimer;
-                            let scale =
-                              (time > 5 ? Math.max(5 - (time - 5), 0) : time) /
-                              7;
-                            ((t.scaleX = 1 + scale),
-                              (t.scaleY = 1 + scale),
-                              (t.x = e.switchButton.x),
-                              (t.y = getBlockFallY(
-                                e.switchButton.x,
-                                e.switchButton.y,
-                                e.inGame && e.inGame.playerX,
-                                e.inGame && e.inGame.fallTypes,
-                                e.inGame && e.inGame.playerDir,
-                              )),
-                              (t.rotation =
-                                e.switchButton.gravity == 0
-                                  ? e.playerDir < 0
-                                    ? -90
-                                    : 90
-                                  : e.switchButton.gravity > 0
-                                    ? 180
-                                    : 0));
-                          },
+                        conditional(
+                          () => e.switchButton.gravity < 2,
+                          () => [
+                            y(
+                              {
+                                fileName: `images/themes/${e.theme == "infinite" ? "infinite" : e.theme == "world2" ? "world2" : "world1"}/arrow.png`,
+                                width: e.switchButton.width,
+                                height: e.switchButton.height,
+                              },
+                              (t) => {
+                                let time = 60 - a.justHitTimer;
+                                let scale =
+                                  (time > 5 ? Math.max(5 - (time - 5), 0) : time) /
+                                  7;
+                                ((t.scaleX = 1 + scale),
+                                  (t.scaleY = 1 + scale),
+                                  (t.x = e.switchButton.x),
+                                  (t.y = getBlockFallY(
+                                    e.switchButton.x,
+                                    e.switchButton.y,
+                                    e.inGame && e.inGame.playerX,
+                                    e.inGame && e.inGame.fallTypes,
+                                    e.inGame && e.inGame.playerDir,
+                                  )),
+                                  (t.rotation =
+                                    e.switchButton.gravity == 0
+                                      ? e.playerDir < 0
+                                        ? -90
+                                        : 90
+                                      : e.switchButton.gravity > 0
+                                        ? 180
+                                        : 0));
+                              },
+                            )
+                          ],
+                          () => [
+                            y(
+                              {
+                                fileName: `images/themes/${e.theme == "infinite" ? "infinite" : "world1"}/doubleJump.png`,
+                                width: e.switchButton.width,
+                                height: e.switchButton.height,
+                              },
+                              (t) => {
+                                let time = 60 - a.justHitTimer;
+                                let scale =
+                                  (time > 5 ? Math.max(5 - (time - 5), 0) : time) /
+                                  7;
+                                ((t.scaleX = 1 + scale),
+                                  (t.scaleY = 1 + scale),
+                                  (t.x = e.switchButton.x),
+                                  (t.y = getBlockFallY(
+                                    e.switchButton.x,
+                                    e.switchButton.y,
+                                    e.inGame && e.inGame.playerX,
+                                    e.inGame && e.inGame.fallTypes,
+                                    e.inGame && e.inGame.playerDir,
+                                  )));
+                              },
+                            )
+                          ]
                         ),
                       ];
                     case "color":
@@ -37982,8 +38014,25 @@ var version = "v1.13.0";
                           },
                         },
                         {
+                          name: "Jump",
+                          selected: t.gravity == 2,
+                          onPress: () => {
+                            i.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "switchButtons",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    gravity: 2,
+                                  }),
+                              });
+                            });
+                          },
+                        },
+                        {
                           name: "Down",
-                          selected: t.gravity > 0,
+                          selected: t.gravity == 1,
                           onPress: () => {
                             i.map((j) => {
                               e({
@@ -43232,14 +43281,25 @@ var version = "v1.13.0";
                     array: "switchButtons",
                     index: toggleGravity,
                   };
-                  ((U.dashing = false),
-                    g == 0
+                  U.dashing = false;
+                  if (g < 2) {
+                    (g == 0
                       ? (U.dashing = true)
                       : ((U.gravity = g), (U.isGravity = true)),
                     (U.playerGradY = G.initGrad(V) * -2 * U.gravity),
                     (L.blockJumpUntilReleased = true),
                     (isDown = false),
                     (U.justDownInputTimer = 0));
+                  } else {
+                    (
+                      (U.playerGradY = G.initGrad(V)),
+                      (U.jumping = true),
+                      (U.boosterDebug && (U.boosterDebug.jumpIndicators.push({ x: U.playerX, y: U.playerY }))),
+                      (U.jumpSwitch.on = !U.jumpSwitch.on),
+                      (U.jumpSwitch.delay = 2),
+                      (U.justDownInputTimer = 0),
+                      null == v || v.jump(false));
+                  };
                 } else if (
                   e &&
                   "punch" ===
@@ -49005,11 +49065,11 @@ var version = "v1.13.0";
                       fc,
                       nd.enum6,
                       nd.enum2,
-                      nd.enum2,
+                      nd.enum3,
                       nd.enum2,
                       nd.enum2,
                     ]),
-                    Gc([fc, fc, nd.enum6, nd.enum2, nd.enum2, nd.enum2]),
+                    Gc([fc, fc, nd.enum6, nd.enum2, nd.enum2, nd.enum3]),
                     Gc([fc, fc, nd.enum6, nd.enum2, nd.enum2]),
                     Gc([fc, fc, nd.enum6, nd.enum2, nd.enum2]),
                     Gc([fc, fc, nd.enum6, nd.enum2]),
@@ -49157,11 +49217,11 @@ var version = "v1.13.0";
                       fc,
                       nd.enum6,
                       nd.enum2,
-                      nd.enum2,
+                      nd.enum3,
                       nd.enum2,
                       nd.enum2,
                     ]),
-                    Gc([fc, fc, nd.enum6, nd.enum2, nd.enum2, nd.enum2]),
+                    Gc([fc, fc, nd.enum6, nd.enum2, nd.enum2, nd.enum3]),
                     Gc([fc, fc, nd.enum6, nd.enum2, nd.enum2]),
                     Gc([fc, fc, nd.enum6, nd.enum2, nd.enum2]),
                     Gc([fc, fc, nd.enum6, nd.enum2]),
@@ -49424,7 +49484,7 @@ var version = "v1.13.0";
                           y: t,
                           affects: eu[a],
                           color: clrs[n] || 0,
-                          gravity: n > 1 ? 0 : n > 0 ? -1 : 1,
+                          gravity: n > 2 ? 2 : n > 1 ? 0 : n > 0 ? -1 : 1,
                           up: !!n,
                           down: !!i,
                         });
@@ -49668,7 +49728,7 @@ var version = "v1.13.0";
                               e.x,
                               e.y,
                               ru(e.affects, eu),
-                              e.gravity == 0 ? 2 : e.gravity > 0 ? 0 : 1,
+                              e.gravity == 2 ? 3 : e.gravity == 0 ? 2 : e.gravity > 0 ? 0 : 1,
                             ]
                           : e.affects == "color"
                             ? [e.x, e.y, ru(e.affects, eu), ru(e.color, clrs)]
