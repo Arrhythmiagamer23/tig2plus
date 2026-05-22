@@ -20006,6 +20006,32 @@ var version = "v1.13.0";
             (s ? s.crashed ? 1 : Math.min((Math.abs(s.playerX - i.x) - 150) / 120, 1) : 1) * 0.8
           ),
           isSpecialTheme = (e) => e === "classic" || e === "infinite",
+          getInfiniteThemePath = (bgColor) => {
+            let table = {
+              "#FF0000": "red",
+              "#ffea00": "yellow",
+              "#00FF00": "green",
+              "#0000ff": "blue",
+              "#8000ff": "purple",
+              "#ff00ff": "pink",
+              "#ffFFff": "purple",
+              "#000000": "purple",
+            };
+            return `infinite/colors/${table[bgColor] || "default"}`
+          },
+          getInfiniteThemeColors = (bgColor) => {
+            let table = {
+              "#FF0000": "#2257a3",
+              "#ffea00": "#6c40c1",
+              "#00FF00": "#860795",
+              "#0000ff": "#b23e17",
+              "#8000ff": "#0b8071",
+              "#ff00ff": "#387330",
+              "#ffFFff": "#0b8071",
+              "#000000": "#0b8071",
+            };
+            return table[bgColor] || "#9e1808";
+          },
           Ja = makeSprite({
             render: ({ props: e }) => [
               onChange(
@@ -20320,7 +20346,7 @@ var version = "v1.13.0";
                   const t = 1;
                   return [
                     imageArray({
-                      fileName: `images/themes/${e.theme}/steel.png`,
+                      fileName: `images/themes/${e.theme.split("/")[0]}/steel.png`,
                       props: () => ({}),
                       update: (a, i, n) => {
                         var s, o;
@@ -20368,7 +20394,7 @@ var version = "v1.13.0";
                   const t = 1;
                   return [
                     imageArray({
-                      fileName: `images/themes/${e.theme}/bottom/block.png`,
+                      fileName: `images/themes/${e.theme.split("/")[0]}/bottom/block.png`,
                       props: () => ({}),
                       update: (a, i, n) => {
                         var s, o;
@@ -20416,7 +20442,7 @@ var version = "v1.13.0";
                   const t = "world3" === e.theme ? 41 / 30 : 1;
                   return [
                     imageArray({
-                      fileName: `images/themes/${e.theme}/boss.png`,
+                      fileName: `images/themes/${e.theme.split("/")[0]}/boss.png`,
                       props: () => ({}),
                       update: (a, i, n) => {
                         var s, o;
@@ -20435,7 +20461,7 @@ var version = "v1.13.0";
                           !(null == r ? void 0 : r.destroyed) &&
                           !(null == r
                             ? void 0
-                            : r.isGround && isSpecialTheme(e.theme))),
+                            : r.isGround && isSpecialTheme(e.theme.split("/")[0]))),
                           (a.width = i.width * t),
                           (a.height = i.height * t),
                           (a.x = i.x),
@@ -20514,64 +20540,105 @@ var version = "v1.13.0";
                 () => {
                   const t = "world3" === e.theme ? 41 / 30 : 1;
                   return [
-                    imageArray({
-                      fileName: `images/themes/${e.theme}/block-light.png`,
-                      props: () => ({}),
-                      update: (a, i, n) => {
-                        const s = e.inGame.blockStates[n];
-                        if (s && !s.destroyed && s.hitFrame) {
-                          const n = B.zeroTo1(
-                            1 - (e.inGame.frame - s.hitFrame) / 20,
-                          );
-                          if (n > 0)
-                            return (
-                              (a.width = i.width * t),
-                              (a.height = i.height * t),
-                              (a.x = i.x),
-                              (a.y = getBlockFallY(
-                                i.x,
-                                i.y,
-                                e.inGame && e.inGame.playerX,
-                                e.inGame && e.inGame.fallTypes,
-                                e.inGame && e.inGame.playerDir,
-                              )),
-                              (a.opacity = n),
-                              void (a.show = !i.steel && !i.isFade && !i.isBoss)
-                            );
-                        }
-                        a.show = false;
-                      },
-                      array: () => e.blocks,
-                    }),
-                    imageArray({
-                      fileName: `images/themes/${e.theme}/boss-light.png`,
-                      props: () => ({}),
-                      update: (a, i, n) => {
-                        const s = e.inGame.blockStates[n];
-                        if (s && !s.destroyed && s.hitFrame) {
-                          const n = B.zeroTo1(
-                            1 - (e.inGame.frame - s.hitFrame) / 20,
-                          );
-                          if (n > 0)
-                            return (
-                              (a.width = i.width * t),
-                              (a.height = i.height * t),
-                              (a.x = i.x),
-                              (a.y = getBlockFallY(
-                                i.x,
-                                i.y,
-                                e.inGame && e.inGame.playerX,
-                                e.inGame && e.inGame.fallTypes,
-                                e.inGame && e.inGame.playerDir,
-                              )),
-                              (a.opacity = n),
-                              void (a.show = !i.steel && !i.isFade && i.isBoss)
-                            );
-                        }
-                        a.show = false;
-                      },
-                      array: () => e.blocks,
-                    }),
+                    conditional(
+                      () => e.theme.split("/")[0] === "infinite",
+                      () => [
+                        g({
+                          props: (e) => ({
+                            width: e.width,
+                            height: e.height,
+                            x: e.x,
+                            y: e.y,
+                            color: "white"
+                          }),
+                          update: (a, i, n) => {
+                            const s = e.inGame.blockStates[n];
+                            if (s && !s.destroyed && s.hitFrame) {
+                              const n = B.zeroTo1(
+                                1 - (e.inGame.frame - s.hitFrame) / 20,
+                              );
+                              if (n > 0)
+                                return (
+                                  (a.width = i.width * t),
+                                  (a.height = i.height * t),
+                                  (a.x = i.x),
+                                  (a.y = getBlockFallY(
+                                    i.x,
+                                    i.y,
+                                    e.inGame && e.inGame.playerX,
+                                    e.inGame && e.inGame.fallTypes,
+                                    e.inGame && e.inGame.playerDir,
+                                  )),
+                                  (a.opacity = n / 2),
+                                  void (a.show = !i.steel && !i.isFade)
+                                );
+                            }
+                            a.show = false;
+                          },
+                          array: () => e.blocks,
+                        })
+                      ],
+                      () => [
+                        imageArray({
+                          fileName: `images/themes/${e.theme}/block-light.png`,
+                          props: () => ({}),
+                          update: (a, i, n) => {
+                            const s = e.inGame.blockStates[n];
+                            if (s && !s.destroyed && s.hitFrame) {
+                              const n = B.zeroTo1(
+                                1 - (e.inGame.frame - s.hitFrame) / 20,
+                              );
+                              if (n > 0)
+                                return (
+                                  (a.width = i.width * t),
+                                  (a.height = i.height * t),
+                                  (a.x = i.x),
+                                  (a.y = getBlockFallY(
+                                    i.x,
+                                    i.y,
+                                    e.inGame && e.inGame.playerX,
+                                    e.inGame && e.inGame.fallTypes,
+                                    e.inGame && e.inGame.playerDir,
+                                  )),
+                                  (a.opacity = n),
+                                  void (a.show = !i.steel && !i.isFade && !i.isBoss)
+                                );
+                            }
+                            a.show = false;
+                          },
+                          array: () => e.blocks,
+                        }),
+                        imageArray({
+                          fileName: `images/themes/${e.theme.split("/")[0]}/boss-light.png`,
+                          props: () => ({}),
+                          update: (a, i, n) => {
+                            const s = e.inGame.blockStates[n];
+                            if (s && !s.destroyed && s.hitFrame) {
+                              const n = B.zeroTo1(
+                                1 - (e.inGame.frame - s.hitFrame) / 20,
+                              );
+                              if (n > 0)
+                                return (
+                                  (a.width = i.width * t),
+                                  (a.height = i.height * t),
+                                  (a.x = i.x),
+                                  (a.y = getBlockFallY(
+                                    i.x,
+                                    i.y,
+                                    e.inGame && e.inGame.playerX,
+                                    e.inGame && e.inGame.fallTypes,
+                                    e.inGame && e.inGame.playerDir,
+                                  )),
+                                  (a.opacity = n),
+                                  void (a.show = !i.steel && !i.isFade && i.isBoss)
+                                );
+                            }
+                            a.show = false;
+                          },
+                          array: () => e.blocks,
+                        }),
+                      ]
+                    ),
                     imageArray({
                       fileName: `images/themes/world3/block-white-light.png`,
                       props: () => ({}),
@@ -21203,7 +21270,7 @@ var version = "v1.13.0";
                             e.inGame && e.inGame.fallTypes,
                             e.inGame && e.inGame.playerDir,
                           ),
-                          theme: e.theme,
+                          theme: e.theme.split("/")[0],
                         };
                       },
                       array: () => e.spikes,
@@ -30696,6 +30763,27 @@ var version = "v1.13.0";
           },
           Qs = {
             getThemeImages: (e) => [
+              ...(e.objects.block === "infinite" ? [
+                "images/themes/infinite/colors/red",
+                "images/themes/infinite/colors/yellow",
+                "images/themes/infinite/colors/green",
+                "images/themes/infinite/colors/default",
+                "images/themes/infinite/colors/blue",
+                "images/themes/infinite/colors/purple",
+                "images/themes/infinite/colors/pink",
+               // "images/themes/infinite/colors/black",
+               // "images/themes/infinite/colors/white",
+              ].map((e) => [
+                e + "/arrow.png",
+                e + "/block.png",
+                e + "/spike.png",
+                e + "/player.png",
+                e + "/player-collecting.png",
+                e + "/player-golden-headphones.png",
+                e + "/saw-big.png",
+                e + "/saw-medium.png",
+                e + "/saw-bar.png",
+              ]).flat() : []),
               `images/themes/${e.objects.block}/block.png`,
               `images/themes/${e.objects.block}/boss.png`,
               `images/themes/${e.objects.block}/steel.png`,
@@ -31307,7 +31395,7 @@ var version = "v1.13.0";
                       a = "world2" === e.theme ? 90 : 93;
                     return [
                       imageArray({
-                        fileName: `images/themes/${e.theme}/saw-rail.png`,
+                        fileName: `images/themes/${e.theme.split("/")[0]}/saw-rail.png`,
                         props: () => ({ width: t, height: a }),
                         update: (n, t) => {
                           ((n.x = t.x),
@@ -31328,9 +31416,10 @@ var version = "v1.13.0";
                 ),
                 conditional(
                   () => void 0 !== e.inGame,
-                  () => [
+                  () => [onChange(
+                  () => e.theme, () => [
                     imageArray({
-                      fileName: `images/themes/${e.theme}/saw.png`,
+                      fileName: `images/themes/${e.theme.split("/")[0]}/saw.png`,
                       props: () => ({}),
                       update: (t, a, i) => {
                         var n, s, o;
@@ -31366,7 +31455,7 @@ var version = "v1.13.0";
                     }),
 
                     imageArray({
-                      fileName: `images/themes/${e.bigTheme == "classic" ? "classic" : e.bigTheme == "infinite" ? "infinite" : e.bigTheme == "world3" ? "world3" : "world1"}/saw-big.png`,
+                      fileName: `images/themes/${e.bigTheme == "classic" ? "classic" : e.bigTheme.includes("infinite") ? e.bigTheme : e.bigTheme == "world3" ? "world3" : "world1"}/saw-big.png`,
                       props: () => ({}),
                       update: (t, a, i) => {
                         var n, s, o;
@@ -31401,7 +31490,7 @@ var version = "v1.13.0";
                       testId: (e, t) => `Saw-${t}`,
                     }),
                     imageArray({
-                      fileName: `images/themes/${e.theme == "classic" ? "classic" : "infinite"}/saw-bar.png`,
+                      fileName: `images/themes/${e.theme == "classic" ? "classic" : e.theme.includes("infinite") ? e.theme : "infinite"}/saw-bar.png`,
                       props: () => ({}),
                       update: (t, a, i) => {
                         var n, s, o;
@@ -31476,7 +31565,7 @@ var version = "v1.13.0";
                       },
                     }),
                     imageArray({
-                      fileName: `images/themes/${e.bigTheme == "classic" ? "classic" : e.bigTheme == "infinite" ? "infinite" : e.bigTheme == "world3" ? "world3" : "world1"}/saw-medium.png`,
+                      fileName: `images/themes/${e.bigTheme == "classic" ? "classic" : e.bigTheme.includes("infinite") ? e.bigTheme : e.bigTheme == "world3" ? "world3" : "world1"}/saw-medium.png`,
                       props: () => ({}),
                       update: (t, a, i) => {
                         var n, s, o;
@@ -31623,7 +31712,7 @@ var version = "v1.13.0";
                             e.inGame && e.inGame.playerDir,
                           )));
                       },
-                    }),
+                    })])
                   ],
                   () => [
                     onChange(
@@ -31685,7 +31774,7 @@ var version = "v1.13.0";
                           testId: (e, t) => `Saw-${t}`,
                         }),
                         imageArray({
-                          fileName: `images/themes/${e.bigTheme == "classic" ? "classic" : e.bigTheme == "infinite" ? "infinite" : e.bigTheme == "world3" ? "world3" : "world1"}/saw-medium.png`,
+                          fileName: `images/themes/${e.bigTheme == "classic" ? "classic" : e.bigTheme.includes("infinite") ? e.bigTheme : e.bigTheme == "world3" ? "world3" : "world1"}/saw-medium.png`,
                           props: () => ({}),
                           update: (e, t) => {
                             ((e.width = t.width * sawRatio),
@@ -41958,6 +42047,7 @@ var version = "v1.13.0";
                       cameraY: 0,
                       scaleX: 1 / propsScale,
                       opacity: isSpecialTheme(g.properties.theme.id) ? 1 : 0.5,
+                      bgColor: runHistory[i].bgColor,
                     })
                   : null,
                 Ja.Single({ id: "Blocks", blocks: h.blocks, theme: v.block }),
@@ -59616,15 +59706,17 @@ var version = "v1.13.0";
                       },
                     )
                   : e.theme == "infinite"
-                    ? y(
+                    ? p(
                         {
-                          fileName: "images/themes/infinite/ground.png",
                           width: 660 * 2,
-                          height: 20,
+                          height: 10,
+                          x: 0,
+                          color: getInfiniteThemeColors(e.bgColor)
                         },
                         (a) => {
                           a.y =
-                            et.initialPosition.y - M / 2 - e.cameraY - 15 + 5;
+                            et.initialPosition.y - M / 2 - e.cameraY - 5;
+                          a.color = getInfiniteThemeColors(e.bgColor);
                         },
                       )
                     : y(
@@ -59636,8 +59728,7 @@ var version = "v1.13.0";
                         (a) => {
                           a.y = et.initialPosition.y - M / 2 - e.cameraY - 15;
                         },
-                      ),
-              ];
+                      )];
             },
           }),
           cm = makeSprite({
@@ -59753,6 +59844,7 @@ var version = "v1.13.0";
                       (a) => {
                         a.cameraY = t.cameraY;
                         a.theme = t.layout.properties.theme.id;
+                        a.bgColor = t.bgColor;
                       },
                     )
                   : null,
@@ -60196,6 +60288,7 @@ var version = "v1.13.0";
                   (t) => {
                     ((t.blocks = e.layout.blocks),
                       (t.theme = e.layout.properties.theme.objects.block),
+                      t.theme === "infinite" && (t.theme = getInfiniteThemePath(e.bgColor)),
                       (t.inGame.blockStates = e.layoutState.blocks),
                       (t.inGame.indexes = e.layoutStateIndex.blocks),
                       (t.inGame.frame = e.frame),
@@ -60228,6 +60321,7 @@ var version = "v1.13.0";
                   (t) => {
                     ((t.spikes = e.layout.spikes),
                       (t.theme = e.layout.properties.theme.objects.spike),
+                      t.theme === "infinite" && (t.theme = getInfiniteThemePath(e.bgColor)),
                       (t.inGame.spikeStates = e.layoutState.spikes),
                       (t.inGame.indexes = e.layoutStateIndex.spikes),
                       (t.inGame.frame = e.frame),
@@ -60447,6 +60541,8 @@ var version = "v1.13.0";
                     ((t.saws = e.layout.saws),
                       (t.bigTheme = e.layout.properties.theme.objects.spike),
                       (t.theme = e.layout.properties.theme.objects.saw),
+                      t.theme === "infinite" && (t.theme = getInfiniteThemePath(e.bgColor)),
+                      t.bigTheme === "infinite" && (t.bigTheme = getInfiniteThemePath(e.bgColor)),
                       (t.inGame.sawStates = e.layoutState.saws),
                       (t.inGame.indexes = e.layoutStateIndex.saws),
                       (t.inGame.frame = e.frame),
