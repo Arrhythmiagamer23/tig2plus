@@ -20690,7 +20690,7 @@ var version = "v1.13.0";
                             e.inGame && e.inGame.fallTypes,
                             e.inGame && e.inGame.playerDir,
                           ),
-                          theme: e.theme,
+                          theme: e.theme.split("/")[0],
                         };
                       },
                       array: () => e.blocks,
@@ -20707,7 +20707,7 @@ var version = "v1.13.0";
                             (null === (i = e.inGame) || void 0 === i
                               ? void 0
                               : i.df) || 1));
-                        t.theme = e.theme || "world2";
+                        t.theme = e.theme.split("/")[0] || "world2";
                       },
                     }),
                   ];
