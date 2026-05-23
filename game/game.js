@@ -20032,6 +20032,19 @@ var version = "v1.13.0";
             };
             return table[bgColor] || "#9e1808";
           },
+          getInfinitePlayerColors = (bgColor) => {
+            let table = {
+              "#FF0000": "#cf4f1e",
+              "#ffea00": "#d48101",
+              "#00FF00": "#2e1b8e",
+              "#0000ff": "#089d72",
+              "#8000ff": "#af4af3",
+              "#ff00ff": "#af4af3",
+              "#ffFFff": "#000000",
+              "#000000": "#FFFFFF",
+            };
+            return table[bgColor] || "#035c74";
+          },
           Ja = makeSprite({
             render: ({ props: e }) => [
               onChange(
@@ -30775,6 +30788,7 @@ var version = "v1.13.0";
                // "images/themes/infinite/colors/white",
               ].map((e) => [
                 e + "/arrow.png",
+                e + "/doubleJump.png",
                 e + "/block.png",
                 e + "/spike.png",
                 e + "/player.png",
@@ -34982,64 +34996,69 @@ var version = "v1.13.0";
                   switch (e.switchButton.affects) {
                     case "gravity":
                       return [
-                        conditional(
-                          () => e.switchButton.gravity < 2,
+                        onChange(
+                          () => e.theme,
                           () => [
-                            y(
-                              {
-                                fileName: `images/themes/${e.theme == "infinite" ? "infinite" : e.theme == "world2" ? "world2" : "world1"}/arrow.png`,
-                                width: e.switchButton.width,
-                                height: e.switchButton.height,
-                              },
-                              (t) => {
-                                let time = 60 - a.justHitTimer;
-                                let scale =
-                                  (time > 5 ? Math.max(5 - (time - 5), 0) : time) /
-                                  7;
-                                ((t.scaleX = 1 + scale),
-                                  (t.scaleY = 1 + scale),
-                                  (t.x = e.switchButton.x),
-                                  (t.y = getBlockFallY(
-                                    e.switchButton.x,
-                                    e.switchButton.y,
-                                    e.inGame && e.inGame.playerX,
-                                    e.inGame && e.inGame.fallTypes,
-                                    e.inGame && e.inGame.playerDir,
-                                  )),
-                                  (t.rotation =
-                                    e.switchButton.gravity == 0
-                                      ? e.playerDir < 0
-                                        ? -90
-                                        : 90
-                                      : e.switchButton.gravity > 0
-                                        ? 180
-                                        : 0));
-                              },
-                            )
-                          ],
-                          () => [
-                            y(
-                              {
-                                fileName: `images/themes/${e.theme == "infinite" ? "infinite" : "world1"}/doubleJump.png`,
-                                width: e.switchButton.width,
-                                height: e.switchButton.height,
-                              },
-                              (t) => {
-                                let time = 60 - a.justHitTimer;
-                                let scale =
-                                  (time > 5 ? Math.max(5 - (time - 5), 0) : time) /
-                                  7;
-                                ((t.scaleX = 1 + scale),
-                                  (t.scaleY = 1 + scale),
-                                  (t.x = e.switchButton.x),
-                                  (t.y = getBlockFallY(
-                                    e.switchButton.x,
-                                    e.switchButton.y,
-                                    e.inGame && e.inGame.playerX,
-                                    e.inGame && e.inGame.fallTypes,
-                                    e.inGame && e.inGame.playerDir,
-                                  )));
-                              },
+                            conditional(
+                              () => e.switchButton.gravity < 2,
+                              () => [
+                                y(
+                                  {
+                                    fileName: `images/themes/${e.theme.includes("infinite") ? e.theme : e.theme == "world2" ? "world2" : "world1"}/arrow.png`,
+                                    width: e.switchButton.width,
+                                    height: e.switchButton.height,
+                                  },
+                                  (t) => {
+                                    let time = 60 - a.justHitTimer;
+                                    let scale =
+                                      (time > 5 ? Math.max(5 - (time - 5), 0) : time) /
+                                      7;
+                                    ((t.scaleX = 1 + scale),
+                                      (t.scaleY = 1 + scale),
+                                      (t.x = e.switchButton.x),
+                                      (t.y = getBlockFallY(
+                                        e.switchButton.x,
+                                        e.switchButton.y,
+                                        e.inGame && e.inGame.playerX,
+                                        e.inGame && e.inGame.fallTypes,
+                                        e.inGame && e.inGame.playerDir,
+                                      )),
+                                      (t.rotation =
+                                        e.switchButton.gravity == 0
+                                          ? e.playerDir < 0
+                                            ? -90
+                                            : 90
+                                          : e.switchButton.gravity > 0
+                                            ? 180
+                                            : 0));
+                                  },
+                                )
+                              ],
+                              () => [
+                                y(
+                                  {
+                                    fileName: `images/themes/${e.theme.includes("infinite") ? e.theme : "world1"}/doubleJump.png`,
+                                    width: e.switchButton.width,
+                                    height: e.switchButton.height,
+                                  },
+                                  (t) => {
+                                    let time = 60 - a.justHitTimer;
+                                    let scale =
+                                      (time > 5 ? Math.max(5 - (time - 5), 0) : time) /
+                                      7;
+                                    ((t.scaleX = 1 + scale),
+                                      (t.scaleY = 1 + scale),
+                                      (t.x = e.switchButton.x),
+                                      (t.y = getBlockFallY(
+                                        e.switchButton.x,
+                                        e.switchButton.y,
+                                        e.inGame && e.inGame.playerX,
+                                        e.inGame && e.inGame.fallTypes,
+                                        e.inGame && e.inGame.playerDir,
+                                      )));
+                                  },
+                                )
+                              ]
                             )
                           ]
                         ),
@@ -35195,7 +35214,7 @@ var version = "v1.13.0";
                       return [
                         y(
                           {
-                            fileName: `images/themes/${e.theme}/switch-button.png`,
+                            fileName: `images/themes/${e.theme.split("/")[0]}/switch-button.png`,
                             width: 32,
                             height: 32,
                           },
@@ -60430,6 +60449,7 @@ var version = "v1.13.0";
                       (t.paused = e.paused),
                       (t.df = e.df),
                       (t.theme = e.layout.properties.theme.objects.switch),
+                      t.theme === "infinite" && (t.theme = getInfiniteThemePath(e.bgColor)),
                       (t.justHit =
                         null !== e.justHitObject &&
                         "switchButtons" === e.justHitObject.array &&
