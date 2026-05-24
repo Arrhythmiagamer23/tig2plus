@@ -54998,8 +54998,9 @@ var version = "v1.13.0";
                               width: 6,
                               height: 6,
                             }),
-                            update: (t, [a, i]) => {
-                              ((t.x = a), (t.y = i + e.offsetY));
+                            update: (k, [a, i]) => {
+                              ((k.x = a), (k.y = i + e.offsetY));
+                              k.color = t.skin.trail.bottomColour;
                             },
                             array: () => e.bottomPath,
                           }),
@@ -55010,8 +55011,9 @@ var version = "v1.13.0";
                               width: 6,
                               height: 6,
                             }),
-                            update: (t, [a, i]) => {
-                              ((t.x = a), (t.y = i + e.offsetY));
+                            update: (k, [a, i]) => {
+                              ((k.x = a), (k.y = i + e.offsetY));
+                              k.color = t.skin.trail.topColour;
                             },
                             array: () => e.middlePath,
                           }),
@@ -55022,8 +55024,9 @@ var version = "v1.13.0";
                               width: 6,
                               height: 6,
                             }),
-                            update: (t, [a, i]) => {
-                              ((t.x = a), (t.y = i + e.offsetY));
+                            update: (k, [a, i]) => {
+                              ((k.x = a), (k.y = i + e.offsetY));
+                              k.color = a.skin.trail.topColour;
                             },
                             array: () => e.topPath,
                           }),
@@ -55038,8 +55041,9 @@ var version = "v1.13.0";
                               lineCap: "round",
                               y: e.offsetY,
                             },
-                            (t) => {
-                              ((t.path = e.bottomPath), (t.y = e.offsetY));
+                            (k) => {
+                              ((k.path = e.bottomPath), (k.y = e.offsetY));
+                              k.color = t.skin.trail.bottomColour;
                             },
                           ),
                           m(
@@ -55051,8 +55055,9 @@ var version = "v1.13.0";
                               lineCap: "round",
                               y: e.offsetY,
                             },
-                            (t) => {
-                              ((t.path = e.middlePath), (t.y = e.offsetY));
+                            (k) => {
+                              ((k.path = e.middlePath), (k.y = e.offsetY));
+                              k.color = t.skin.trail.topColour;
                             },
                           ),
                           m(
@@ -55064,8 +55069,9 @@ var version = "v1.13.0";
                               lineCap: "round",
                               y: e.offsetY,
                             },
-                            (t) => {
-                              ((t.path = e.topPath), (t.y = e.offsetY));
+                            (k) => {
+                              ((k.path = e.topPath), (k.y = e.offsetY));
+                              k.color = t.skin.trail.topColour;
                             },
                           ),
                         ],
@@ -60916,9 +60922,16 @@ var version = "v1.13.0";
                           (t.playerDir = e.playerDir),
                           (t.crashed = e.crashed || e.hidePlayer),
                           (t.paused = e.paused),
-                          (t.skin = e.playerSkin),
                           (t.attempt = e.attempt),
-                          (t.touchingPortals = null !== e.touchingPortals));
+                          (t.touchingPortals = null !== e.touchingPortals),
+                          (t.skin = Object.assign({}, e.playerSkin)),
+                          (t.skin.trail = Object.assign({}, e.playerSkin.trail)),
+                          (e.layout.properties.theme.id === "infinite") && (t.skin.trail = {
+                            form: "default",
+                            topColour: getInfinitePlayerColors(e.bgColor),
+                            bottomColour: getInfinitePlayerColors(e.bgColor),
+                          })
+                        );
                       },
                     ),
                   ],
@@ -61094,7 +61107,15 @@ var version = "v1.13.0";
                                       (t.paused = e.paused),
                                       (t.attempt = e.attempt),
                                       (t.touchingPortals =
-                                        null !== e.touchingPortals));
+                                        null !== e.touchingPortals),
+                                      (t.skin = Object.assign({}, e.playerSkin)),
+                                      (t.skin.trail = Object.assign({}, e.playerSkin.trail)),
+                                      (e.layout.properties.theme.id === "infinite") && (t.skin.trail = {
+                                        form: "default",
+                                        topColour: getInfinitePlayerColors(e.bgColor),
+                                        bottomColour: getInfinitePlayerColors(e.bgColor),
+                                      })
+                                    );
                                   },
                                   array: () => e.playerStacks,
                                   key: (e, t) => t,
@@ -61135,7 +61156,15 @@ var version = "v1.13.0";
                                       (t.playerY = a),
                                       (t.playerDir = e.playerDir),
                                       (t.paused = e.paused),
-                                      (t.attempt = e.attempt));
+                                      (t.attempt = e.attempt),
+                                      (t.skin = Object.assign({}, e.playerSkin)),
+                                      (t.skin.trail = Object.assign({}, e.playerSkin.trail)),
+                                      (e.layout.properties.theme.id === "infinite") && (t.skin.trail = {
+                                        form: "default",
+                                        topColour: getInfinitePlayerColors(e.bgColor),
+                                        bottomColour: getInfinitePlayerColors(e.bgColor),
+                                      })
+                                    );
                                   },
                                   array: () => e.playerStacks,
                                   key: (e, t) => t,
@@ -61316,8 +61345,15 @@ var version = "v1.13.0";
                           (t.playerDir = e.playerDir),
                           (t.crashed = e.crashed || e.hidePlayer),
                           (t.paused = e.paused),
-                          (t.skin = e.playerSkin),
-                          (t.touchingPortals = null !== e.touchingPortals));
+                          (t.touchingPortals = null !== e.touchingPortals),
+                          (t.skin = Object.assign({}, e.playerSkin)),
+                          (t.skin.trail = Object.assign({}, e.playerSkin.trail)),
+                          (e.layout.properties.theme.id === "infinite") && (t.skin.trail = {
+                            form: "default",
+                            topColour: getInfinitePlayerColors(e.bgColor),
+                            bottomColour: getInfinitePlayerColors(e.bgColor),
+                          })
+                        );
                       },
                     ),
                   ],
