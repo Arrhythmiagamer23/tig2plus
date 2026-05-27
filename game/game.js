@@ -20006,6 +20006,32 @@ var version = "v1.13.0";
             (s ? s.crashed ? 1 : Math.min((Math.abs(s.playerX - i.x) - 150) / 120, 1) : 1) * 0.8
           ),
           isSpecialTheme = (e) => e === "classic" || e === "infinite",
+          infiniteBgTable = function (i, clr) {
+            return (
+              [
+                {
+                  "#FF0000": "#f6d4c5",
+                  "#ffea00": "#f8ecb7",
+                  "#00FF00": "#ceeed7",
+                  "#0000ff": "#898ce1",
+                  "#8000ff": "#f8cef6",
+                  "#ff00ff": "#e189da",
+                  "#ffFFff": "#e7e7e7",
+                  "#000000": "#4f4f4f",
+                },
+                {
+                  "#FF0000": "#f5c8b7",
+                  "#ffea00": "#F5E190",
+                  "#00FF00": "#bee8c9",
+                  "#0000ff": "#7b76d7",
+                  "#8000ff": "#f5c1f7",
+                  "#ff00ff": "#d776d1",
+                  "#ffFFff": "#d8d8d8",
+                  "#000000": "#383838",
+                },
+              ][i][clr] || (i ? "#76d7d6" : "#89dde1")
+            );
+          },
           getInfiniteThemePath = (bgColor) => {
             let table = {
               "#FF0000": "red",
@@ -20014,8 +20040,8 @@ var version = "v1.13.0";
               "#0000ff": "blue",
               "#8000ff": "purple",
               "#ff00ff": "pink",
-              "#ffFFff": "purple",
-              "#000000": "purple",
+              "#ffFFff": "white",
+              "#000000": "black",
             };
             return `infinite/colors/${table[bgColor] || "default"}`
           },
@@ -20027,8 +20053,8 @@ var version = "v1.13.0";
               "#0000ff": "#b23e17",
               "#8000ff": "#0b8071",
               "#ff00ff": "#387330",
-              "#ffFFff": "#0b8071",
-              "#000000": "#0b8071",
+              "#ffFFff": "#1c1c1c",
+              "#000000": "#FFFFFF",
             };
             return table[bgColor] || "#9e1808";
           },
@@ -20040,8 +20066,8 @@ var version = "v1.13.0";
               "#0000ff": "#089d72",
               "#8000ff": "#af4af3",
               "#ff00ff": "#af4af3",
-              "#ffFFff": "#000000",
-              "#000000": "#FFFFFF",
+              "#ffFFff": "#FFFFFF",
+              "#000000": "#1c1c1c",
             };
             return table[bgColor] || "#035c74";
           },
@@ -30784,8 +30810,8 @@ var version = "v1.13.0";
                 "images/themes/infinite/colors/blue",
                 "images/themes/infinite/colors/purple",
                 "images/themes/infinite/colors/pink",
-               // "images/themes/infinite/colors/black",
-               // "images/themes/infinite/colors/white",
+                "images/themes/infinite/colors/black",
+                "images/themes/infinite/colors/white",
               ].map((e) => [
                 e + "/arrow.png",
                 e + "/doubleJump.png",
@@ -31408,23 +31434,51 @@ var version = "v1.13.0";
                     const t = "world2" === e.theme ? 20 / 3 : 3,
                       a = "world2" === e.theme ? 90 : 93;
                     return [
-                      imageArray({
-                        fileName: `images/themes/${e.theme.split("/")[0]}/saw-rail.png`,
-                        props: () => ({ width: t, height: a }),
-                        update: (n, t) => {
-                          ((n.x = t.x),
-                            (n.y = getBlockFallY(
-                              t.x,
-                              t.midY,
-                              e.inGame && e.inGame.playerX,
-                              e.inGame && e.inGame.fallTypes,
-                              e.inGame && e.inGame.playerDir,
-                            )));
-                          n.show =
-                            "upDown" === t.movement || "downUp" === t.movement;
-                        },
-                        array: () => e.saws,
-                      }),
+                      conditional(
+                        () => e.theme.includes("infinite"),
+                        () => [
+                          f({
+                            props: () => ({
+                              thickness: 4,
+                              color: 'red',
+                              opacity: 1,
+                              lineCap: "round",
+                              path: [
+                                [0, 45],
+                                [0, 0],
+                                [0, -45],
+                              ],
+                            }),
+                            update: (a, n, index) => {
+                              ((a.x = n.x),
+                                (a.y = n.midY),
+                                (a.show =
+                                "upDown" === n.movement || "downUp" === n.movement),
+                              (a.color = e.bgColor));
+                            },
+                            array: () => e.saws,
+                          })
+                        ],
+                        () => [
+                          imageArray({
+                            fileName: `images/themes/${e.theme.split("/")[0]}/saw-rail.png`,
+                            props: () => ({ width: t, height: a }),
+                            update: (n, t) => {
+                              ((n.x = t.x),
+                                (n.y = getBlockFallY(
+                                  t.x,
+                                  t.midY,
+                                  e.inGame && e.inGame.playerX,
+                                  e.inGame && e.inGame.fallTypes,
+                                  e.inGame && e.inGame.playerDir,
+                                )));
+                              n.show =
+                                "upDown" === t.movement || "downUp" === t.movement;
+                            },
+                            array: () => e.saws,
+                          }),
+                        ]
+                      ),
                     ];
                   },
                 ),
@@ -56977,32 +57031,7 @@ var version = "v1.13.0";
           infiniteTiles = rangeAsArray(-16, 17).map((y) =>
             rangeAsArray(-16, 17).map((e) => [e * 60, y * 60]),
           ),
-          infiniteBgTable = function (i, clr) {
-            return (
-              [
-                {
-                  "#FF0000": "#f6d4c5",
-                  "#ffea00": "#f8ecb7",
-                  "#00FF00": "#ceeed7",
-                  "#0000ff": "#898ce1",
-                  "#8000ff": "#c889e1",
-                  "#ff00ff": "#e189da",
-                  "#ffFFff": "#FFFFFF",
-                  "#000000": "#282828",
-                },
-                {
-                  "#FF0000": "#f5c8b7",
-                  "#ffea00": "#F5E190",
-                  "#00FF00": "#bee8c9",
-                  "#0000ff": "#7b76d7",
-                  "#8000ff": "#b076d7",
-                  "#ff00ff": "#d776d1",
-                  "#ffFFff": "#e7e7e7",
-                  "#000000": "#000000",
-                },
-              ][i][clr] || (i ? "#76d7d6" : "#89dde1")
-            );
-          },
+          
           xg = makeSprite({
             render({ props: e, device: t }) {
               const a = (() => {
@@ -60612,6 +60641,7 @@ var version = "v1.13.0";
                       playerX: e.playerX,
                       fallTypes: e.fallTypes,
                     },
+                    bgColor: e.bgColor,
                   },
                   (t) => {
                     ((t.saws = e.layout.saws),
@@ -60619,6 +60649,7 @@ var version = "v1.13.0";
                       (t.theme = e.layout.properties.theme.objects.saw),
                       t.theme === "infinite" && (t.theme = getInfiniteThemePath(e.bgColor)),
                       t.bigTheme === "infinite" && (t.bigTheme = getInfiniteThemePath(e.bgColor)),
+                      (t.bgColor = getInfiniteThemeColors(e.bgColor)),
                       (t.inGame.sawStates = e.layoutState.saws),
                       (t.inGame.indexes = e.layoutStateIndex.saws),
                       (t.inGame.frame = e.frame),
