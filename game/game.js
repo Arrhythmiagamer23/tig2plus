@@ -31741,7 +31741,7 @@ var version = "v1.13.0";
                                 )
                               : y(
                                   {
-                                    fileName: `images/themes/${e.theme}/saw.png`,
+                                    fileName: `images/themes/${e.theme.split("/")[0]}/saw.png`,
                                     width: t.width,
                                     height: t.height,
                                   },
@@ -31787,7 +31787,7 @@ var version = "v1.13.0";
                       () => e.theme,
                       () => [
                         imageArray({
-                          fileName: `images/themes/${e.theme}/saw.png`,
+                          fileName: `images/themes/${e.theme.split("/")[0]}/saw.png`,
                           props: () => ({}),
                           update: (e, t) => {
                             ((e.width = t.width),
@@ -31805,7 +31805,7 @@ var version = "v1.13.0";
                           testId: (e, t) => `Saw-${t}`,
                         }),
                         imageArray({
-                          fileName: `images/themes/${e.theme}/saw.png`,
+                          fileName: `images/themes/${e.theme.split("/")[0]}/saw.png`,
                           props: () => ({}),
                           update: (e, t) => {
                             ((e.width = t.width),
@@ -31822,7 +31822,7 @@ var version = "v1.13.0";
                           array: () => e.saws,
                         }),
                         imageArray({
-                          fileName: `images/themes/${e.theme}/saw.png`,
+                          fileName: `images/themes/${e.theme.split("/")[0]}/saw.png`,
                           props: () => ({}),
                           update: (e, t) => {
                             ((e.width = t.width),
@@ -32788,7 +32788,18 @@ var version = "v1.13.0";
                   ? $.getSwitchPlatformUpRectangle(e)
                   : $.getSwitchPlatformDownRectangle(e);
             }
-            ((n.canJumpThrough && !t.isCompatible) ||
+            (
+              true &&
+                be.rectTouchesRect2(
+                  newX,
+                  newY - t.height * (3 / 8),
+                  t.width / 2,
+                  t.height / 4,
+                  n,
+                ) &&
+                ((edge = be.getObjectTopY(e, t.x, t.y) + t.height / 2), (newY = edge),
+                n.kind == "walkerHelmet" && !t.isCompatible && (y = true)),
+              (n.canJumpThrough && !t.isCompatible) ||
               (be.rectTouchesRect2(
                 newX - t.width / 4,
                 newY + t.height / 8,
@@ -32805,17 +32816,8 @@ var version = "v1.13.0";
                   0.75 * t.height,
                   n,
                 ) &&
-                  (newDirection = -1)),
-              true &&
-                be.rectTouchesRect2(
-                  newX,
-                  newY - t.height * (3 / 8),
-                  t.width / 2,
-                  t.height / 4,
-                  n,
-                ) &&
-                ((edge = be.getObjectTopY(e, t.x, t.y) + t.height / 2),
-                n.kind == "walkerHelmet" && !t.isCompatible && (y = true)));
+                  (newDirection = -1))
+              );
           }
           for (const spring of springs) {
             /*be.rectTouchesRect2(
@@ -41299,7 +41301,7 @@ var version = "v1.13.0";
                 };
               let newViewOffset = Object.assign({}, d);
               (r.keysDown.a && (newViewOffset.x += (1 / d.scale) * 10));
-              (r.keysDown.d && (newViewOffset.x -= (1 / d.scale) * 10));
+              (r.keysDown.d && !(r.keysDown.Control || r.keysDown.Meta) && (newViewOffset.x -= (1 / d.scale) * 10));
               u({ viewOffset: newViewOffset });
               (r.keysJustPressed["="] &&
                 (r.keysDown.Control || r.keysDown.Meta) &&
@@ -42149,6 +42151,10 @@ var version = "v1.13.0";
                 { objects: v, player: T } = g.properties.theme,
                 R = "default" === E.fileName ? T : E;
               overlapObjects = getContext(Se).settings.overlapObjects;
+              let blockTheme = v.block === "infinite" ? getInfiniteThemePath(runHistory[i].bgColor) : v.block,
+              spikeTheme = v.spike === "infinite" ? getInfiniteThemePath(runHistory[i].bgColor) : v.spike,
+              sawTheme = v.saw === "infinite" ? getInfiniteThemePath(runHistory[i].bgColor) : v.saw,
+              switchTheme = v.switch === "infinite" ? getInfiniteThemePath(runHistory[i].bgColor) : v.switch;
               return [
                 GridLines.Single({
                   id: "GridLines",
@@ -42167,8 +42173,8 @@ var version = "v1.13.0";
                       bgColor: runHistory[i].bgColor,
                     })
                   : null,
-                Ja.Single({ id: "Blocks", blocks: h.blocks, theme: v.block }),
-                Za.Single({ id: "Spikes", spikes: h.spikes, theme: v.spike }),
+                Ja.Single({ id: "Blocks", blocks: h.blocks, theme: blockTheme }),
+                Za.Single({ id: "Spikes", spikes: h.spikes, theme: spikeTheme }),
                 Qa.Single({
                   id: "Platforms",
                   platforms: h.platforms,
@@ -42228,7 +42234,7 @@ var version = "v1.13.0";
                 eo.Single({
                   id: "Saws",
                   saws: h.saws,
-                  theme: v.saw,
+                  theme: sawTheme,
                   editor: {
                     previewYs: inViewLayoutAtTime.saws.map((e) => e.y),
                     previewRots: inViewLayoutAtTime.saws.map((e) => e.rotation),
@@ -42269,7 +42275,7 @@ var version = "v1.13.0";
                     playerScale: runHistory[i].playerScale,
                     isEditor: true,
                     justHit: false,
-                    theme: v.switch,
+                    theme: switchTheme,
                     spineContext: getContext(Ws),
                     paused: pauseAnimations,
                     scale: propsScale,
