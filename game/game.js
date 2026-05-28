@@ -20015,7 +20015,7 @@ var version = "v1.13.0";
                   "#00FF00": "#ceeed7",
                   "#0000ff": "#898ce1",
                   "#8000ff": "#f8cef6",
-                  "#ff00ff": "#e189da",
+                  "#ff00ff": "#f8cee7",
                   "#ffFFff": "#e7e7e7",
                   "#000000": "#4f4f4f",
                 },
@@ -20025,7 +20025,7 @@ var version = "v1.13.0";
                   "#00FF00": "#bee8c9",
                   "#0000ff": "#7b76d7",
                   "#8000ff": "#f5c1f7",
-                  "#ff00ff": "#d776d1",
+                  "#ff00ff": "#f7c1e2",
                   "#ffFFff": "#d8d8d8",
                   "#000000": "#383838",
                 },
@@ -20049,10 +20049,10 @@ var version = "v1.13.0";
             let table = {
               "#FF0000": "#2257a3",
               "#ffea00": "#6c40c1",
-              "#00FF00": "#860795",
-              "#0000ff": "#b23e17",
-              "#8000ff": "#0b8071",
-              "#ff00ff": "#387330",
+              "#00FF00": "#b23e17",
+              "#0000ff": "#860795",
+              "#8000ff": "#387330",
+              "#ff00ff": "#0b8071",
               "#ffFFff": "#1c1c1c",
               "#000000": "#FFFFFF",
             };
@@ -20062,10 +20062,10 @@ var version = "v1.13.0";
             let table = {
               "#FF0000": "#cf4f1e",
               "#ffea00": "#d48101",
-              "#00FF00": "#2e1b8e",
-              "#0000ff": "#089d72",
+              "#00FF00": "#089d72",
+              "#0000ff": "#2e1b8e",
               "#8000ff": "#af4af3",
-              "#ff00ff": "#af4af3",
+              "#ff00ff": "#ac089b",
               "#ffFFff": "#FFFFFF",
               "#000000": "#1c1c1c",
             };
@@ -61014,7 +61014,23 @@ var version = "v1.13.0";
                             df: e.df,
                           },
                           (t) => {
-                            ((t.paused = e.paused), (t.df = e.df));
+                            (
+                              (t.paused = e.paused), 
+                              (t.df = e.df),
+                              (t.trail = ["world1", "default", "headphone"].includes(e.playerSkin.fileName) && e.layout.properties.theme.id === "infinite" ?
+                                {
+                                  form: "default",
+                                  topColour: getInfinitePlayerColors(e.bgColor),
+                                  bottomColour: getInfinitePlayerColors(e.bgColor),
+                                }
+                              : e.flyingAnchor === null && !e.isFlyingLevel
+                                ? e.playerSkin.trail
+                                : {
+                                    form: "default",
+                                    topColour: "#FCDA45",
+                                    bottomColour: "#FCDA45",
+                                  })  
+                            );
                           },
                         ),
                       ],
