@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
   showcaseOnly = false;
 
-var version = "v1.13.1";
+var version = "v1.14.1";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -20006,6 +20006,71 @@ var version = "v1.13.1";
             (s ? s.crashed ? 1 : Math.min((Math.abs(s.playerX - i.x) - 150) / 120, 1) : 1) * 0.8
           ),
           isSpecialTheme = (e) => e === "classic" || e === "infinite",
+          infiniteBgTable = function (i, clr) {
+            return (
+              [
+                {
+                  "#FF0000": "#f6d4c5",
+                  "#ffea00": "#f8ecb7",
+                  "#00FF00": "#ceeed7",
+                  "#0000ff": "#c3e6e7",
+                  "#8000ff": "#f8cef6",
+                  "#ff00ff": "#f8cee7",
+                  "#ffFFff": "#e7e7e7",
+                  "#000000": "#4f4f4f",
+                },
+                {
+                  "#FF0000": "#f5c8b7",
+                  "#ffea00": "#F5E190",
+                  "#00FF00": "#bee8c9",
+                  "#0000ff": "#b4d8ea",
+                  "#8000ff": "#f5c1f7",
+                  "#ff00ff": "#f7c1e2",
+                  "#ffFFff": "#d8d8d8",
+                  "#000000": "#383838",
+                },
+              ][i][clr] || (i ? "#76d7d6" : "#89dde1")
+            );
+          },
+          getInfiniteThemePath = (bgColor) => {
+            let table = {
+              "#FF0000": "red",
+              "#ffea00": "yellow",
+              "#00FF00": "green",
+              "#0000ff": "blue",
+              "#8000ff": "purple",
+              "#ff00ff": "pink",
+              "#ffFFff": "white",
+              "#000000": "black",
+            };
+            return `infinite/colors/${table[bgColor] || "default"}`
+          },
+          getInfiniteThemeColors = (bgColor) => {
+            let table = {
+              "#FF0000": "#2257a3",
+              "#ffea00": "#6c40c1",
+              "#00FF00": "#b23e17",
+              "#0000ff": "#860795",
+              "#8000ff": "#387330",
+              "#ff00ff": "#0b8071",
+              "#ffFFff": "#1c1c1c",
+              "#000000": "#FFFFFF",
+            };
+            return table[bgColor] || "#9e1808";
+          },
+          getInfinitePlayerColors = (bgColor) => {
+            let table = {
+              "#FF0000": "#cf4f1e",
+              "#ffea00": "#d48101",
+              "#00FF00": "#089d72",
+              "#0000ff": "#2e1b8e",
+              "#8000ff": "#af4af3",
+              "#ff00ff": "#ac089b",
+              "#ffFFff": "#FFFFFF",
+              "#000000": "#1c1c1c",
+            };
+            return table[bgColor] || "#035c74";
+          },
           Ja = makeSprite({
             render: ({ props: e }) => [
               onChange(
@@ -20320,7 +20385,7 @@ var version = "v1.13.1";
                   const t = 1;
                   return [
                     imageArray({
-                      fileName: `images/themes/${e.theme}/steel.png`,
+                      fileName: `images/themes/${e.theme.split("/")[0]}/steel.png`,
                       props: () => ({}),
                       update: (a, i, n) => {
                         var s, o;
@@ -20368,7 +20433,7 @@ var version = "v1.13.1";
                   const t = 1;
                   return [
                     imageArray({
-                      fileName: `images/themes/${e.theme}/bottom/block.png`,
+                      fileName: `images/themes/${e.theme.split("/")[0]}/bottom/block.png`,
                       props: () => ({}),
                       update: (a, i, n) => {
                         var s, o;
@@ -20416,7 +20481,7 @@ var version = "v1.13.1";
                   const t = "world3" === e.theme ? 41 / 30 : 1;
                   return [
                     imageArray({
-                      fileName: `images/themes/${e.theme}/boss.png`,
+                      fileName: `images/themes/${e.theme.split("/")[0]}/boss.png`,
                       props: () => ({}),
                       update: (a, i, n) => {
                         var s, o;
@@ -20435,7 +20500,7 @@ var version = "v1.13.1";
                           !(null == r ? void 0 : r.destroyed) &&
                           !(null == r
                             ? void 0
-                            : r.isGround && isSpecialTheme(e.theme))),
+                            : r.isGround && isSpecialTheme(e.theme.split("/")[0]))),
                           (a.width = i.width * t),
                           (a.height = i.height * t),
                           (a.x = i.x),
@@ -20514,64 +20579,105 @@ var version = "v1.13.1";
                 () => {
                   const t = "world3" === e.theme ? 41 / 30 : 1;
                   return [
-                    imageArray({
-                      fileName: `images/themes/${e.theme}/block-light.png`,
-                      props: () => ({}),
-                      update: (a, i, n) => {
-                        const s = e.inGame.blockStates[n];
-                        if (s && !s.destroyed && s.hitFrame) {
-                          const n = B.zeroTo1(
-                            1 - (e.inGame.frame - s.hitFrame) / 20,
-                          );
-                          if (n > 0)
-                            return (
-                              (a.width = i.width * t),
-                              (a.height = i.height * t),
-                              (a.x = i.x),
-                              (a.y = getBlockFallY(
-                                i.x,
-                                i.y,
-                                e.inGame && e.inGame.playerX,
-                                e.inGame && e.inGame.fallTypes,
-                                e.inGame && e.inGame.playerDir,
-                              )),
-                              (a.opacity = n),
-                              void (a.show = !i.steel && !i.isFade && !i.isBoss)
-                            );
-                        }
-                        a.show = false;
-                      },
-                      array: () => e.blocks,
-                    }),
-                    imageArray({
-                      fileName: `images/themes/${e.theme}/boss-light.png`,
-                      props: () => ({}),
-                      update: (a, i, n) => {
-                        const s = e.inGame.blockStates[n];
-                        if (s && !s.destroyed && s.hitFrame) {
-                          const n = B.zeroTo1(
-                            1 - (e.inGame.frame - s.hitFrame) / 20,
-                          );
-                          if (n > 0)
-                            return (
-                              (a.width = i.width * t),
-                              (a.height = i.height * t),
-                              (a.x = i.x),
-                              (a.y = getBlockFallY(
-                                i.x,
-                                i.y,
-                                e.inGame && e.inGame.playerX,
-                                e.inGame && e.inGame.fallTypes,
-                                e.inGame && e.inGame.playerDir,
-                              )),
-                              (a.opacity = n),
-                              void (a.show = !i.steel && !i.isFade && i.isBoss)
-                            );
-                        }
-                        a.show = false;
-                      },
-                      array: () => e.blocks,
-                    }),
+                    conditional(
+                      () => e.theme.split("/")[0] === "infinite",
+                      () => [
+                        g({
+                          props: (e) => ({
+                            width: e.width,
+                            height: e.height,
+                            x: e.x,
+                            y: e.y,
+                            color: "white"
+                          }),
+                          update: (a, i, n) => {
+                            const s = e.inGame.blockStates[n];
+                            if (s && !s.destroyed && s.hitFrame) {
+                              const n = B.zeroTo1(
+                                1 - (e.inGame.frame - s.hitFrame) / 20,
+                              );
+                              if (n > 0)
+                                return (
+                                  (a.width = i.width * t),
+                                  (a.height = i.height * t),
+                                  (a.x = i.x),
+                                  (a.y = getBlockFallY(
+                                    i.x,
+                                    i.y,
+                                    e.inGame && e.inGame.playerX,
+                                    e.inGame && e.inGame.fallTypes,
+                                    e.inGame && e.inGame.playerDir,
+                                  )),
+                                  (a.opacity = n / 2),
+                                  void (a.show = !i.steel && !i.isFade)
+                                );
+                            }
+                            a.show = false;
+                          },
+                          array: () => e.blocks,
+                        })
+                      ],
+                      () => [
+                        imageArray({
+                          fileName: `images/themes/${e.theme}/block-light.png`,
+                          props: () => ({}),
+                          update: (a, i, n) => {
+                            const s = e.inGame.blockStates[n];
+                            if (s && !s.destroyed && s.hitFrame) {
+                              const n = B.zeroTo1(
+                                1 - (e.inGame.frame - s.hitFrame) / 20,
+                              );
+                              if (n > 0)
+                                return (
+                                  (a.width = i.width * t),
+                                  (a.height = i.height * t),
+                                  (a.x = i.x),
+                                  (a.y = getBlockFallY(
+                                    i.x,
+                                    i.y,
+                                    e.inGame && e.inGame.playerX,
+                                    e.inGame && e.inGame.fallTypes,
+                                    e.inGame && e.inGame.playerDir,
+                                  )),
+                                  (a.opacity = n),
+                                  void (a.show = !i.steel && !i.isFade && !i.isBoss)
+                                );
+                            }
+                            a.show = false;
+                          },
+                          array: () => e.blocks,
+                        }),
+                        imageArray({
+                          fileName: `images/themes/${e.theme.split("/")[0]}/boss-light.png`,
+                          props: () => ({}),
+                          update: (a, i, n) => {
+                            const s = e.inGame.blockStates[n];
+                            if (s && !s.destroyed && s.hitFrame) {
+                              const n = B.zeroTo1(
+                                1 - (e.inGame.frame - s.hitFrame) / 20,
+                              );
+                              if (n > 0)
+                                return (
+                                  (a.width = i.width * t),
+                                  (a.height = i.height * t),
+                                  (a.x = i.x),
+                                  (a.y = getBlockFallY(
+                                    i.x,
+                                    i.y,
+                                    e.inGame && e.inGame.playerX,
+                                    e.inGame && e.inGame.fallTypes,
+                                    e.inGame && e.inGame.playerDir,
+                                  )),
+                                  (a.opacity = n),
+                                  void (a.show = !i.steel && !i.isFade && i.isBoss)
+                                );
+                            }
+                            a.show = false;
+                          },
+                          array: () => e.blocks,
+                        }),
+                      ]
+                    ),
                     imageArray({
                       fileName: `images/themes/world3/block-white-light.png`,
                       props: () => ({}),
@@ -20623,7 +20729,7 @@ var version = "v1.13.1";
                             e.inGame && e.inGame.fallTypes,
                             e.inGame && e.inGame.playerDir,
                           ),
-                          theme: e.theme,
+                          theme: e.theme.split("/")[0],
                         };
                       },
                       array: () => e.blocks,
@@ -20640,7 +20746,7 @@ var version = "v1.13.1";
                             (null === (i = e.inGame) || void 0 === i
                               ? void 0
                               : i.df) || 1));
-                        t.theme = e.theme || "world2";
+                        t.theme = e.theme.split("/")[0] || "world2";
                       },
                     }),
                   ];
@@ -21203,7 +21309,7 @@ var version = "v1.13.1";
                             e.inGame && e.inGame.fallTypes,
                             e.inGame && e.inGame.playerDir,
                           ),
-                          theme: e.theme,
+                          theme: e.theme.split("/")[0],
                         };
                       },
                       array: () => e.spikes,
@@ -30696,6 +30802,29 @@ var version = "v1.13.1";
           },
           Qs = {
             getThemeImages: (e) => [
+              ...(e.objects.block === "infinite" ? [
+                "images/themes/infinite/colors/red",
+                "images/themes/infinite/colors/yellow",
+                "images/themes/infinite/colors/green",
+                "images/themes/infinite/colors/default",
+                "images/themes/infinite/colors/blue",
+                "images/themes/infinite/colors/purple",
+                "images/themes/infinite/colors/pink",
+                "images/themes/infinite/colors/black",
+                "images/themes/infinite/colors/white",
+              ].map((e) => [
+                e + "/arrow.png",
+                e + "/doubleJump.png",
+                e + "/block.png",
+                e + "/spike.png",
+                e + "/player.png",
+                e + "/player-collecting.png",
+                e + "/player-golden-headphones.png",
+                e + "/saw-big.png",
+                e + "/saw-medium.png",
+                e + "/saw-bar.png",
+                e + "/saw.png"
+              ]).flat() : []),
               `images/themes/${e.objects.block}/block.png`,
               `images/themes/${e.objects.block}/boss.png`,
               `images/themes/${e.objects.block}/steel.png`,
@@ -31306,29 +31435,58 @@ var version = "v1.13.1";
                     const t = "world2" === e.theme ? 20 / 3 : 3,
                       a = "world2" === e.theme ? 90 : 93;
                     return [
-                      imageArray({
-                        fileName: `images/themes/${e.theme}/saw-rail.png`,
-                        props: () => ({ width: t, height: a }),
-                        update: (n, t) => {
-                          ((n.x = t.x),
-                            (n.y = getBlockFallY(
-                              t.x,
-                              t.midY,
-                              e.inGame && e.inGame.playerX,
-                              e.inGame && e.inGame.fallTypes,
-                              e.inGame && e.inGame.playerDir,
-                            )));
-                          n.show =
-                            "upDown" === t.movement || "downUp" === t.movement;
-                        },
-                        array: () => e.saws,
-                      }),
+                      conditional(
+                        () => e.theme.includes("infinite"),
+                        () => [
+                          f({
+                            props: () => ({
+                              thickness: 4,
+                              color: 'red',
+                              opacity: 1,
+                              lineCap: "round",
+                              path: [
+                                [0, 45],
+                                [0, 0],
+                                [0, -45],
+                              ],
+                            }),
+                            update: (a, n, index) => {
+                              ((a.x = n.x),
+                                (a.y = n.midY),
+                                (a.show =
+                                "upDown" === n.movement || "downUp" === n.movement),
+                              (a.color = e.bgColor || "9b2e4b"));
+                            },
+                            array: () => e.saws,
+                          })
+                        ],
+                        () => [
+                          imageArray({
+                            fileName: `images/themes/${e.theme.split("/")[0]}/saw-rail.png`,
+                            props: () => ({ width: t, height: a }),
+                            update: (n, t) => {
+                              ((n.x = t.x),
+                                (n.y = getBlockFallY(
+                                  t.x,
+                                  t.midY,
+                                  e.inGame && e.inGame.playerX,
+                                  e.inGame && e.inGame.fallTypes,
+                                  e.inGame && e.inGame.playerDir,
+                                )));
+                              n.show =
+                                "upDown" === t.movement || "downUp" === t.movement;
+                            },
+                            array: () => e.saws,
+                          }),
+                        ]
+                      ),
                     ];
                   },
                 ),
                 conditional(
                   () => void 0 !== e.inGame,
-                  () => [
+                  () => [onChange(
+                  () => e.theme, () => [
                     imageArray({
                       fileName: `images/themes/${e.theme}/saw.png`,
                       props: () => ({}),
@@ -31366,7 +31524,7 @@ var version = "v1.13.1";
                     }),
 
                     imageArray({
-                      fileName: `images/themes/${e.bigTheme == "classic" ? "classic" : e.bigTheme == "infinite" ? "infinite" : e.bigTheme == "world3" ? "world3" : "world1"}/saw-big.png`,
+                      fileName: `images/themes/${e.bigTheme == "classic" ? "classic" : e.bigTheme.includes("infinite") ? e.bigTheme : e.bigTheme == "world3" ? "world3" : "world1"}/saw-big.png`,
                       props: () => ({}),
                       update: (t, a, i) => {
                         var n, s, o;
@@ -31401,7 +31559,7 @@ var version = "v1.13.1";
                       testId: (e, t) => `Saw-${t}`,
                     }),
                     imageArray({
-                      fileName: `images/themes/${e.theme == "classic" ? "classic" : "infinite"}/saw-bar.png`,
+                      fileName: `images/themes/${e.theme == "classic" ? "classic" : e.theme.includes("infinite") ? e.theme : "infinite"}/saw-bar.png`,
                       props: () => ({}),
                       update: (t, a, i) => {
                         var n, s, o;
@@ -31476,7 +31634,7 @@ var version = "v1.13.1";
                       },
                     }),
                     imageArray({
-                      fileName: `images/themes/${e.bigTheme == "classic" ? "classic" : e.bigTheme == "infinite" ? "infinite" : e.bigTheme == "world3" ? "world3" : "world1"}/saw-medium.png`,
+                      fileName: `images/themes/${e.bigTheme == "classic" ? "classic" : e.bigTheme.includes("infinite") ? e.bigTheme : e.bigTheme == "world3" ? "world3" : "world1"}/saw-medium.png`,
                       props: () => ({}),
                       update: (t, a, i) => {
                         var n, s, o;
@@ -31623,7 +31781,7 @@ var version = "v1.13.1";
                             e.inGame && e.inGame.playerDir,
                           )));
                       },
-                    }),
+                    })])
                   ],
                   () => [
                     onChange(
@@ -31685,7 +31843,7 @@ var version = "v1.13.1";
                           testId: (e, t) => `Saw-${t}`,
                         }),
                         imageArray({
-                          fileName: `images/themes/${e.bigTheme == "classic" ? "classic" : e.bigTheme == "infinite" ? "infinite" : e.bigTheme == "world3" ? "world3" : "world1"}/saw-medium.png`,
+                          fileName: `images/themes/${e.bigTheme == "classic" ? "classic" : e.bigTheme.includes("infinite") ? e.bigTheme : e.bigTheme == "world3" ? "world3" : "world1"}/saw-medium.png`,
                           props: () => ({}),
                           update: (e, t) => {
                             ((e.width = t.width * sawRatio),
@@ -31705,7 +31863,7 @@ var version = "v1.13.1";
                           testId: (e, t) => `Saw-${t}`,
                         }),
                         imageArray({
-                          fileName: `images/themes/${e.bigTheme == "classic" ? "classic" : e.bigTheme == "infinite" ? "infinite" : e.bigTheme == "world3" ? "world3" : "world1"}/saw-big.png`,
+                          fileName: `images/themes/${e.bigTheme == "classic" ? "classic" : e.bigTheme.includes("infinite") ? e.bigTheme : e.bigTheme == "world3" ? "world3" : "world1"}/saw-big.png`,
                           props: () => ({}),
                           update: (e, t) => {
                             ((e.width = t.width * sawRatio),
@@ -31725,7 +31883,7 @@ var version = "v1.13.1";
                           testId: (e, t) => `Saw-${t}`,
                         }),
                         imageArray({
-                          fileName: `images/themes/${e.theme == "classic" ? "classic" : "infinite"}/saw-bar.png`,
+                          fileName: `images/themes/${e.theme == "classic" ? "classic" : e.theme.includes("infinite") ? e.theme : "infinite"}/saw-bar.png`,
                           props: () => ({}),
                           update: (e, t) => {
                             ((e.width = t.height),
@@ -32573,7 +32731,7 @@ var version = "v1.13.1";
         function bombEnemyKind(
           e,
           t,
-          a,
+          state,
           i,
           n,
           s,
@@ -32585,21 +32743,21 @@ var version = "v1.13.1";
           springs,
           jumpHeight,
         ) {
-          if (a.destroyed && a.destroyed?.by == "gun") {
-            return a;
+          if (state.destroyed && state.destroyed?.by == "gun") {
+            return state;
           }
           // 130 BPM is 4.875
           // 1.95
           let d = be.rectTouchesRect(t),
             u = df * (l / 1.625),
-            h = df * a.speedY,
-            newX = t.x + a.direction * u,
+            h = df * state.speedY,
+            newX = t.x + state.direction * u,
             newY = t.y - h;
           let edge = null,
-            newDirection = a.direction,
+            newDirection = state.direction,
             y = false;
-          for (const { object: e, index: a } of [...n, ...springs]) {
-            if ("enemy" === e.type && a === i) continue;
+          for (const { object: e, index: index } of n) {
+            if ("enemy" === e.type && index === i) continue;
             let n = e;
             if ("switchPlatform" === e.type && 0 !== e.rotation) {
               if (-90 !== e.rotation && 90 !== e.rotation) {
@@ -32631,7 +32789,27 @@ var version = "v1.13.1";
                   ? $.getSwitchPlatformUpRectangle(e)
                   : $.getSwitchPlatformDownRectangle(e);
             }
-            ((n.canJumpThrough && !t.isCompatible) ||
+            (
+              true &&
+                be.rectTouchesRect2(
+                  newX,
+                  newY - t.height * (3 / 8),
+                  t.width / 2,
+                  t.height / 4,
+                  n,
+                ) &&
+                ((edge = be.getObjectTopY(e, t.x, t.y) + t.height / 2), (newY = edge),
+                n.kind == "walkerHelmet" && !t.isCompatible && (y = true)),
+              !n.canJumpThrough &&
+                be.rectTouchesRect2(
+                  newX,
+                  newY + t.height * (3 / 8),
+                  t.width / 2,
+                  t.height / 4,
+                  n,
+                ) &&
+                ((newY = be.getObjectTopY(e, t.x, t.y) - t.height / 2), (state.speedY = 0), (h = 0)),
+              (n.canJumpThrough && !t.isCompatible) ||
               (be.rectTouchesRect2(
                 newX - t.width / 4,
                 newY + t.height / 8,
@@ -32648,50 +32826,44 @@ var version = "v1.13.1";
                   0.75 * t.height,
                   n,
                 ) &&
-                  (newDirection = -1)),
-              true &&
-                be.rectTouchesRect2(
-                  newX,
-                  newY - t.height * (3 / 8),
-                  t.width / 2,
-                  t.height / 4,
-                  n,
-                ) &&
-                ((edge = be.getObjectTopY(e, t.x, t.y) + t.height / 2),
-                n.kind == "walkerHelmet" && !t.isCompatible && (y = true)));
+                  (newDirection = -1))
+              );
           }
-          for (const spring of springs) {
-            /*be.rectTouchesRect2(
+          for (const pair of springs) {
+            let spring = pair.object;
+            be.rectTouchesRect2(
                 newX,
                 newY,
                 t.width,
                 t.height,
                 spring
             ) && (
-              a.speedY = -(spring.direction > 0
-                      ? Math.max(1.5 * G.initGrad(jumpHeight, 1), -Math.abs((a.speedY)))
-                      : -Math.min(1 * G.initGrad(jumpHeight, 1), a.speedY)) *
-                    spring.direction,
-              h *= df * a.speedY,
-              newY = spring.y + (spring.height / 2) * spring.direction + 15 * spring.direction
-            )*/
+              (state.speedY = -(spring.direction > 0
+                      ? Math.max(l, Math.abs((state.speedY)) * 1.25)
+                      : Math.max(l, Math.abs(state.speedY))) *
+                    spring.direction),
+              (h = 0),
+              (newY = spring.y + (spring.height / 2) * spring.direction + 16 * spring.direction),
+              (state.offsetY = newY - o[r[i]].y),
+              (edge = null)
+            )
           }
           if (edge !== null) {
-            if (a.speedY > 1) {
+            if (state.speedY > 1) {
               h *= -0.25;
-              a.speedY *= -0.25;
+              state.speedY *= -0.25;
               newY = t.y - h;
               edge = null;
             } else {
-              a.speedY = 0;
+              state.speedY = 0;
               h = 0;
               newY = t.y;
             }
           }
           const E = o[r[i]].y;
-          if (ho(a, e))
-            return Object.assign(Object.assign({}, a), {
-              offsetY: null === edge ? a.offsetY - h : edge - E,
+          if (ho(state, e))
+            return Object.assign(Object.assign({}, state), {
+              offsetY: null === edge ? state.offsetY - h : edge - E,
               direction: newDirection,
             });
           for (const { object: i } of [
@@ -32710,26 +32882,26 @@ var version = "v1.13.1";
                   false,
                 )(i)
               ) {
-                return Object.assign(Object.assign({}, a), {
+                return Object.assign(Object.assign({}, state), {
                   destroyed: { frame: e, x: t.x, y: t.y, by: "object" },
                 });
               }
             } else if ("enemy" !== i?.type && d(i))
-              return Object.assign(Object.assign({}, a), {
+              return Object.assign(Object.assign({}, state), {
                 destroyed: { frame: e, x: t.x, y: t.y, by: "object" },
               });
           return y
-            ? Object.assign(Object.assign({}, a), {
+            ? Object.assign(Object.assign({}, state), {
                 destroyed: { frame: e, x: newX, y: newY, by: "object" },
               })
-            : Object.assign(Object.assign({}, a), {
-                framesSeen: a.framesSeen + df,
-                offsetX: a.offsetX + newDirection * u,
-                offsetY: null === edge ? a.offsetY - h : edge - E,
+            : Object.assign(Object.assign({}, state), {
+                framesSeen: state.framesSeen + df,
+                offsetX: state.offsetX + newDirection * u,
+                offsetY: null === edge ? state.offsetY - h : edge - E,
                 direction: newDirection,
                 speedY:
                   null === edge
-                    ? Math.min(a.speedY + l * (0.4 / 4.875), df * l * 2) * df
+                    ? Math.min(state.speedY + l * (0.4 / 4.875), df * l * 2) * df
                     : 0,
               });
         }
@@ -33901,7 +34073,46 @@ var version = "v1.13.1";
           }),
           To = makeSprite({
             render: ({ props: e, getContext }) => [
-              onChange(
+              conditional(
+              () => e.isInfinite && ["world1", "default", "headphone"].includes(e.skin.fileName),
+              () => [
+                onChange(
+                  () => e.bgColor,
+                  () => [
+                    y(
+                      {
+                        testId: e.testId || "Player",
+                        fileName: `images/themes/${getInfiniteThemePath(e.bgColor)}/player${e.skin.fileName === "headphone" ? "-collecting" : ""}.png`,
+                        width: e.skin.fileName === "headphone" ? e.skin.size : 30,
+                        height: e.skin.fileName === "headphone" ? e.skin.size : 30,
+                      },
+                      (t) => {
+                        t.y = e.onSkateboard ? $.skateboardHeight : 0;
+                      },
+                    ),
+                    ifConditional(
+                      () =>
+                        Boolean(e.landTimer) &&
+                        !getContext(Se).settings.hidePlayerGlow,
+                      () => [
+                        y(
+                          {
+                            fileName: bgOnly
+                              ? "images/themes/blank/block.png"
+                              : "images/player/glow.png",
+                            width: 85,
+                            height: 52,
+                          },
+                          (t) => {
+                            t.opacity = e.landTimer / et.landTimerLimit;
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                )
+              ],
+              () => [onChange(
                 () => e.skin.fileName,
                 () => [
                   y(
@@ -33935,7 +34146,8 @@ var version = "v1.13.1";
                     ],
                   ),
                 ],
-              ),
+              )]
+              )
             ],
           }),
           Ro = makeSprite({
@@ -34361,6 +34573,8 @@ var version = "v1.13.1";
                       return [
                         To.Single({ skin: e.skin }, (t) => {
                           ((t.x = e.powerup.x),
+                          (t.isInfinite = false),
+                                      (t.bgColor = e.bgColor),
                             (t.y = getBlockFallY(
                               e.powerup.x,
                               e.powerup.y,
@@ -34381,6 +34595,8 @@ var version = "v1.13.1";
                               e.inGame && e.inGame.fallTypes,
                               e.inGame && e.inGame.playerDir,
                             )),
+                            (t.isInfinite = false),
+                            (t.bgColor = e.bgColor),
                             (t.opacity = 0.5));
                         }),
                       ];
@@ -34849,64 +35065,69 @@ var version = "v1.13.1";
                   switch (e.switchButton.affects) {
                     case "gravity":
                       return [
-                        conditional(
-                          () => e.switchButton.gravity < 2,
+                        onChange(
+                          () => e.theme,
                           () => [
-                            y(
-                              {
-                                fileName: `images/themes/${e.theme == "infinite" ? "infinite" : e.theme == "world2" ? "world2" : "world1"}/arrow.png`,
-                                width: e.switchButton.width,
-                                height: e.switchButton.height,
-                              },
-                              (t) => {
-                                let time = 60 - a.justHitTimer;
-                                let scale =
-                                  (time > 5 ? Math.max(5 - (time - 5), 0) : time) /
-                                  7;
-                                ((t.scaleX = 1 + scale),
-                                  (t.scaleY = 1 + scale),
-                                  (t.x = e.switchButton.x),
-                                  (t.y = getBlockFallY(
-                                    e.switchButton.x,
-                                    e.switchButton.y,
-                                    e.inGame && e.inGame.playerX,
-                                    e.inGame && e.inGame.fallTypes,
-                                    e.inGame && e.inGame.playerDir,
-                                  )),
-                                  (t.rotation =
-                                    e.switchButton.gravity == 0
-                                      ? e.playerDir < 0
-                                        ? -90
-                                        : 90
-                                      : e.switchButton.gravity > 0
-                                        ? 180
-                                        : 0));
-                              },
-                            )
-                          ],
-                          () => [
-                            y(
-                              {
-                                fileName: `images/themes/${e.theme == "infinite" ? "infinite" : "world1"}/doubleJump.png`,
-                                width: e.switchButton.width,
-                                height: e.switchButton.height,
-                              },
-                              (t) => {
-                                let time = 60 - a.justHitTimer;
-                                let scale =
-                                  (time > 5 ? Math.max(5 - (time - 5), 0) : time) /
-                                  7;
-                                ((t.scaleX = 1 + scale),
-                                  (t.scaleY = 1 + scale),
-                                  (t.x = e.switchButton.x),
-                                  (t.y = getBlockFallY(
-                                    e.switchButton.x,
-                                    e.switchButton.y,
-                                    e.inGame && e.inGame.playerX,
-                                    e.inGame && e.inGame.fallTypes,
-                                    e.inGame && e.inGame.playerDir,
-                                  )));
-                              },
+                            conditional(
+                              () => e.switchButton.gravity < 2,
+                              () => [
+                                y(
+                                  {
+                                    fileName: `images/themes/${e.theme.includes("infinite") ? e.theme : e.theme == "world2" ? "world2" : "world1"}/arrow.png`,
+                                    width: e.switchButton.width,
+                                    height: e.switchButton.height,
+                                  },
+                                  (t) => {
+                                    let time = 60 - a.justHitTimer;
+                                    let scale =
+                                      (time > 5 ? Math.max(5 - (time - 5), 0) : time) /
+                                      7;
+                                    ((t.scaleX = 1 + scale),
+                                      (t.scaleY = 1 + scale),
+                                      (t.x = e.switchButton.x),
+                                      (t.y = getBlockFallY(
+                                        e.switchButton.x,
+                                        e.switchButton.y,
+                                        e.inGame && e.inGame.playerX,
+                                        e.inGame && e.inGame.fallTypes,
+                                        e.inGame && e.inGame.playerDir,
+                                      )),
+                                      (t.rotation =
+                                        e.switchButton.gravity == 0
+                                          ? e.playerDir < 0
+                                            ? -90
+                                            : 90
+                                          : e.switchButton.gravity > 0
+                                            ? 180
+                                            : 0));
+                                  },
+                                )
+                              ],
+                              () => [
+                                y(
+                                  {
+                                    fileName: `images/themes/${e.theme.includes("infinite") ? e.theme : "world1"}/doubleJump.png`,
+                                    width: e.switchButton.width,
+                                    height: e.switchButton.height,
+                                  },
+                                  (t) => {
+                                    let time = 60 - a.justHitTimer;
+                                    let scale =
+                                      (time > 5 ? Math.max(5 - (time - 5), 0) : time) /
+                                      7;
+                                    ((t.scaleX = 1 + scale),
+                                      (t.scaleY = 1 + scale),
+                                      (t.x = e.switchButton.x),
+                                      (t.y = getBlockFallY(
+                                        e.switchButton.x,
+                                        e.switchButton.y,
+                                        e.inGame && e.inGame.playerX,
+                                        e.inGame && e.inGame.fallTypes,
+                                        e.inGame && e.inGame.playerDir,
+                                      )));
+                                  },
+                                )
+                              ]
                             )
                           ]
                         ),
@@ -35062,7 +35283,7 @@ var version = "v1.13.1";
                       return [
                         y(
                           {
-                            fileName: `images/themes/${e.theme}/switch-button.png`,
+                            fileName: `images/themes/${e.theme.split("/")[0]}/switch-button.png`,
                             width: 32,
                             height: 32,
                           },
@@ -41093,7 +41314,7 @@ var version = "v1.13.1";
                 };
               let newViewOffset = Object.assign({}, d);
               (r.keysDown.a && (newViewOffset.x += (1 / d.scale) * 10));
-              (r.keysDown.d && (newViewOffset.x -= (1 / d.scale) * 10));
+              (r.keysDown.d && !(r.keysDown.Control || r.keysDown.Meta) && (newViewOffset.x -= (1 / d.scale) * 10));
               u({ viewOffset: newViewOffset });
               (r.keysJustPressed["="] &&
                 (r.keysDown.Control || r.keysDown.Meta) &&
@@ -41943,6 +42164,10 @@ var version = "v1.13.1";
                 { objects: v, player: T } = g.properties.theme,
                 R = "default" === E.fileName ? T : E;
               overlapObjects = getContext(Se).settings.overlapObjects;
+              let blockTheme = v.block === "infinite" ? getInfiniteThemePath(runHistory[i].bgColor) : v.block,
+              spikeTheme = v.spike === "infinite" ? getInfiniteThemePath(runHistory[i].bgColor) : v.spike,
+              sawTheme = v.saw === "infinite" ? getInfiniteThemePath(runHistory[i].bgColor) : v.saw,
+              switchTheme = v.switch === "infinite" ? getInfiniteThemePath(runHistory[i].bgColor) : v.switch;
               return [
                 GridLines.Single({
                   id: "GridLines",
@@ -41958,10 +42183,11 @@ var version = "v1.13.1";
                       cameraY: 0,
                       scaleX: 1 / propsScale,
                       opacity: isSpecialTheme(g.properties.theme.id) ? 1 : 0.5,
+                      bgColor: runHistory[i].bgColor,
                     })
                   : null,
-                Ja.Single({ id: "Blocks", blocks: h.blocks, theme: v.block }),
-                Za.Single({ id: "Spikes", spikes: h.spikes, theme: v.spike }),
+                Ja.Single({ id: "Blocks", blocks: h.blocks, theme: blockTheme }),
+                Za.Single({ id: "Spikes", spikes: h.spikes, theme: spikeTheme }),
                 Qa.Single({
                   id: "Platforms",
                   platforms: h.platforms,
@@ -42021,13 +42247,14 @@ var version = "v1.13.1";
                 eo.Single({
                   id: "Saws",
                   saws: h.saws,
-                  theme: v.saw,
+                  theme: sawTheme,
                   editor: {
                     previewYs: inViewLayoutAtTime.saws.map((e) => e.y),
                     previewRots: inViewLayoutAtTime.saws.map((e) => e.rotation),
                   },
-                  bigTheme: v.spike,
+                  bigTheme: spikeTheme,
                   frame: frame,
+                  bgColor: getInfiniteThemeColors(runHistory[i].bgColor)
                 }),
                 ...inViewLayoutAtTime.enemies.map((e, t) =>
                   runHistory[i].layoutState.enemies[t].destroyed
@@ -42062,7 +42289,7 @@ var version = "v1.13.1";
                     playerScale: runHistory[i].playerScale,
                     isEditor: true,
                     justHit: false,
-                    theme: v.switch,
+                    theme: switchTheme,
                     spineContext: getContext(Ws),
                     paused: pauseAnimations,
                     scale: propsScale,
@@ -42653,16 +42880,6 @@ var version = "v1.13.1";
                               e.onPress());
                           },
                           sprites: (t) => [
-                            conditional(
-                              () => t,
-                              () => [
-                                y({
-                                  fileName: `images/themes/${e.theme}/menu-button-pressed.png`,
-                                  width: 50,
-                                  height: 28,
-                                }),
-                              ],
-                              () => [
                                 e.theme === "infinite"
                                   ? p(
                                       {
@@ -42679,9 +42896,9 @@ var version = "v1.13.1";
                                   fileName: `images/themes/${e.theme}/menu-button.png`,
                                   width: 50,
                                   height: 28,
-                                }),
-                              ],
-                            ),
+                                }, (a) => {
+                                  a.opacity = t ? 0.5 : 1
+                                })
                           ],
                         }),
                       ]
@@ -54845,8 +55062,9 @@ var version = "v1.13.1";
                               width: 6,
                               height: 6,
                             }),
-                            update: (t, [a, i]) => {
-                              ((t.x = a), (t.y = i + e.offsetY));
+                            update: (k, [a, i]) => {
+                              ((k.x = a), (k.y = i + e.offsetY));
+                              k.color = t.skin.trail.bottomColour;
                             },
                             array: () => e.bottomPath,
                           }),
@@ -54857,8 +55075,9 @@ var version = "v1.13.1";
                               width: 6,
                               height: 6,
                             }),
-                            update: (t, [a, i]) => {
-                              ((t.x = a), (t.y = i + e.offsetY));
+                            update: (k, [a, i]) => {
+                              ((k.x = a), (k.y = i + e.offsetY));
+                              k.color = t.skin.trail.topColour;
                             },
                             array: () => e.middlePath,
                           }),
@@ -54869,8 +55088,9 @@ var version = "v1.13.1";
                               width: 6,
                               height: 6,
                             }),
-                            update: (t, [a, i]) => {
-                              ((t.x = a), (t.y = i + e.offsetY));
+                            update: (k, [a, i]) => {
+                              ((k.x = a), (k.y = i + e.offsetY));
+                              k.color = a.skin.trail.topColour;
                             },
                             array: () => e.topPath,
                           }),
@@ -54885,8 +55105,9 @@ var version = "v1.13.1";
                               lineCap: "round",
                               y: e.offsetY,
                             },
-                            (t) => {
-                              ((t.path = e.bottomPath), (t.y = e.offsetY));
+                            (k) => {
+                              ((k.path = e.bottomPath), (k.y = e.offsetY));
+                              k.color = t.skin.trail.bottomColour;
                             },
                           ),
                           m(
@@ -54898,8 +55119,9 @@ var version = "v1.13.1";
                               lineCap: "round",
                               y: e.offsetY,
                             },
-                            (t) => {
-                              ((t.path = e.middlePath), (t.y = e.offsetY));
+                            (k) => {
+                              ((k.path = e.middlePath), (k.y = e.offsetY));
+                              k.color = t.skin.trail.topColour;
                             },
                           ),
                           m(
@@ -54911,8 +55133,9 @@ var version = "v1.13.1";
                               lineCap: "round",
                               y: e.offsetY,
                             },
-                            (t) => {
-                              ((t.path = e.topPath), (t.y = e.offsetY));
+                            (k) => {
+                              ((k.path = e.topPath), (k.y = e.offsetY));
+                              k.color = t.skin.trail.topColour;
                             },
                           ),
                         ],
@@ -56822,32 +57045,7 @@ var version = "v1.13.1";
           infiniteTiles = rangeAsArray(-16, 17).map((y) =>
             rangeAsArray(-16, 17).map((e) => [e * 60, y * 60]),
           ),
-          infiniteBgTable = function (i, clr) {
-            return (
-              [
-                {
-                  "#FF0000": "#e18989",
-                  "#ffea00": "#dee189",
-                  "#00FF00": "#89e193",
-                  "#0000ff": "#898ce1",
-                  "#8000ff": "#c889e1",
-                  "#ff00ff": "#e189da",
-                  "#ffFFff": "#FFFFFF",
-                  "#000000": "#282828",
-                },
-                {
-                  "#FF0000": "#d77676",
-                  "#ffea00": "#d7cd76",
-                  "#00FF00": "#88d776",
-                  "#0000ff": "#7b76d7",
-                  "#8000ff": "#b076d7",
-                  "#ff00ff": "#d776d1",
-                  "#ffFFff": "#e7e7e7",
-                  "#000000": "#000000",
-                },
-              ][i][clr] || (i ? "#76d7d6" : "#89dde1")
-            );
-          },
+          
           xg = makeSprite({
             render({ props: e, device: t }) {
               const a = (() => {
@@ -58176,14 +58374,14 @@ var version = "v1.13.1";
                               {
                                 fileName:
                                   "images/themes/punch/background/water.png",
-                                playerX: 0.03 * e.cameraX,
-                                playerY: 0.03 * e.cameraY,
+                                playerX: 0 * e.cameraX,
+                                playerY: 0 * e.cameraY,
                                 height: 177,
                                 y: -100,
                               },
                               (t) => {
-                                ((t.playerX = 0.03 * e.cameraX),
-                                  (t.playerY = 0.03 * e.cameraY));
+                                ((t.playerX = 0 * e.cameraX),
+                                  (t.playerY = 0 * e.cameraY));
                               },
                             ),
                             y({
@@ -59114,6 +59312,8 @@ var version = "v1.13.1";
                     (t.playerDir = e.playerDir),
                     (t.skin = e.skin),
                     (t.landTimer = e.landTimer),
+                    (t.isInfinite = e.isInfinite),
+                        (t.bgColor = e.bgColor),
                     (t.onSkateboard = e.onSkateboard),
                     (t.mask = circleMask(
                       Zg(e.touchingPortals[0], e.playerX, e.playerY),
@@ -59143,6 +59343,8 @@ var version = "v1.13.1";
                     (a.skin = e.skin),
                     (a.landTimer = e.landTimer),
                     (a.onSkateboard = e.onSkateboard),
+                    (t.isInfinite = e.isInfinite),
+                        (t.bgColor = e.bgColor),
                     (a.mask = circleMask(
                       Zg(
                         e.touchingPortals[1],
@@ -59181,6 +59383,8 @@ var version = "v1.13.1";
                         (t.scaleY = e.playerScaleY),
                         (t.skin = e.skin),
                         (t.landTimer = e.landTimer),
+                        (t.isInfinite = e.isInfinite),
+                        (t.bgColor = e.bgColor),
                         (t.onSkateboard = e.onSkateboard));
                     },
                   ),
@@ -59621,15 +59825,17 @@ var version = "v1.13.1";
                       },
                     )
                   : e.theme == "infinite"
-                    ? y(
+                    ? p(
                         {
-                          fileName: "images/themes/infinite/ground.png",
                           width: 660 * 2,
-                          height: 20,
+                          height: 10,
+                          x: 0,
+                          color: getInfiniteThemeColors(e.bgColor)
                         },
                         (a) => {
                           a.y =
-                            et.initialPosition.y - M / 2 - e.cameraY - 15 + 5;
+                            et.initialPosition.y - M / 2 - e.cameraY - 5;
+                          a.color = getInfiniteThemeColors(e.bgColor);
                         },
                       )
                     : y(
@@ -59641,8 +59847,7 @@ var version = "v1.13.1";
                         (a) => {
                           a.y = et.initialPosition.y - M / 2 - e.cameraY - 15;
                         },
-                      ),
-              ];
+                      )];
             },
           }),
           cm = makeSprite({
@@ -59758,6 +59963,7 @@ var version = "v1.13.1";
                       (a) => {
                         a.cameraY = t.cameraY;
                         a.theme = t.layout.properties.theme.id;
+                        a.bgColor = t.bgColor;
                       },
                     )
                   : null,
@@ -60201,6 +60407,7 @@ var version = "v1.13.1";
                   (t) => {
                     ((t.blocks = e.layout.blocks),
                       (t.theme = e.layout.properties.theme.objects.block),
+                      t.theme === "infinite" && (t.theme = getInfiniteThemePath(e.bgColor)),
                       (t.inGame.blockStates = e.layoutState.blocks),
                       (t.inGame.indexes = e.layoutStateIndex.blocks),
                       (t.inGame.frame = e.frame),
@@ -60233,6 +60440,7 @@ var version = "v1.13.1";
                   (t) => {
                     ((t.spikes = e.layout.spikes),
                       (t.theme = e.layout.properties.theme.objects.spike),
+                      t.theme === "infinite" && (t.theme = getInfiniteThemePath(e.bgColor)),
                       (t.inGame.spikeStates = e.layoutState.spikes),
                       (t.inGame.indexes = e.layoutStateIndex.spikes),
                       (t.inGame.frame = e.frame),
@@ -60291,6 +60499,7 @@ var version = "v1.13.1";
                       (t.paused = e.paused),
                       (t.df = e.df),
                       (t.theme = e.layout.properties.theme.objects.switch),
+                      t.theme === "infinite" && (t.theme = getInfiniteThemePath(e.bgColor)),
                       (t.justHit =
                         null !== e.justHitObject &&
                         "switchButtons" === e.justHitObject.array &&
@@ -60447,11 +60656,15 @@ var version = "v1.13.1";
                       playerX: e.playerX,
                       fallTypes: e.fallTypes,
                     },
+                    bgColor: e.bgColor,
                   },
                   (t) => {
                     ((t.saws = e.layout.saws),
                       (t.bigTheme = e.layout.properties.theme.objects.spike),
                       (t.theme = e.layout.properties.theme.objects.saw),
+                      t.theme === "infinite" && (t.theme = getInfiniteThemePath(e.bgColor)),
+                      t.bigTheme === "infinite" && (t.bigTheme = getInfiniteThemePath(e.bgColor)),
+                      (t.bgColor = getInfiniteThemeColors(e.bgColor)),
                       (t.inGame.sawStates = e.layoutState.saws),
                       (t.inGame.indexes = e.layoutStateIndex.saws),
                       (t.inGame.frame = e.frame),
@@ -60755,9 +60968,16 @@ var version = "v1.13.1";
                           (t.playerDir = e.playerDir),
                           (t.crashed = e.crashed || e.hidePlayer),
                           (t.paused = e.paused),
-                          (t.skin = e.playerSkin),
                           (t.attempt = e.attempt),
-                          (t.touchingPortals = null !== e.touchingPortals));
+                          (t.touchingPortals = null !== e.touchingPortals),
+                          (t.skin = Object.assign({}, e.playerSkin)),
+                          (t.skin.trail = Object.assign({}, e.playerSkin.trail)),
+                          (e.layout.properties.theme.id === "infinite") && ["world1", "default", "headphone"].includes(t.skin.fileName) && (t.skin.trail = {
+                            form: "default",
+                            topColour: getInfinitePlayerColors(e.bgColor),
+                            bottomColour: getInfinitePlayerColors(e.bgColor),
+                          })
+                        );
                       },
                     ),
                   ],
@@ -60803,7 +61023,23 @@ var version = "v1.13.1";
                             df: e.df,
                           },
                           (t) => {
-                            ((t.paused = e.paused), (t.df = e.df));
+                            (
+                              (t.paused = e.paused), 
+                              (t.df = e.df),
+                              (t.trail = ["world1", "default", "headphone"].includes(e.playerSkin.fileName) && e.layout.properties.theme.id === "infinite" ?
+                                {
+                                  form: "default",
+                                  topColour: getInfinitePlayerColors(e.bgColor),
+                                  bottomColour: getInfinitePlayerColors(e.bgColor),
+                                }
+                              : e.flyingAnchor === null && !e.isFlyingLevel
+                                ? e.playerSkin.trail
+                                : {
+                                    form: "default",
+                                    topColour: "#FCDA45",
+                                    bottomColour: "#FCDA45",
+                                  })  
+                            );
                           },
                         ),
                       ],
@@ -60846,6 +61082,8 @@ var version = "v1.13.1";
                                   (t.playerScale = e.playerScale),
                                   (t.playerScaleY = e.playerScaleY),
                                   (t.onSkateboard = i),
+                                  (t.isInfinite = e.layout.properties.theme.id === "infinite"),
+                                  (t.bgColor = e.bgColor),
                                   (t.touchingPortals = e.touchingPortals));
                               },
                             ),
@@ -60883,6 +61121,8 @@ var version = "v1.13.1";
                                     (t.scaleX = e.playerScaleX * e.playerDir),
                                     (t.scaleY = e.playerScaleY),
                                     (t.skin = e.playerSkin),
+                                    (t.isInfinite = e.layout.properties.theme.id === "infinite"),
+                                      (t.bgColor = e.bgColor),
                                     (t.opacity = e.playerPowerups.some(
                                       (e) => e.item == "ghost",
                                     )
@@ -60929,7 +61169,15 @@ var version = "v1.13.1";
                                       (t.paused = e.paused),
                                       (t.attempt = e.attempt),
                                       (t.touchingPortals =
-                                        null !== e.touchingPortals));
+                                        null !== e.touchingPortals),
+                                      (t.skin = Object.assign({}, e.playerSkin)),
+                                      (t.skin.trail = Object.assign({}, e.playerSkin.trail)),
+                                      (e.layout.properties.theme.id === "infinite") && ["world1", "default", "headphone"].includes(t.skin.fileName) && (t.skin.trail = {
+                                        form: "default",
+                                        topColour: getInfinitePlayerColors(e.bgColor),
+                                        bottomColour: getInfinitePlayerColors(e.bgColor),
+                                      })
+                                    );
                                   },
                                   array: () => e.playerStacks,
                                   key: (e, t) => t,
@@ -60944,7 +61192,9 @@ var version = "v1.13.1";
                                         (e.isCompatible ? 1 : e.playerScale)),
                                       (t.scaleY = e.isCompatible
                                         ? 1
-                                        : e.playerScale));
+                                        : e.playerScale),
+                                      (t.isInfinite = e.layout.properties.theme.id === "infinite"),
+                                      (t.bgColor = e.bgColor));
                                   },
                                   array: () => e.playerStacks,
                                   key: (e, t) => t,
@@ -60968,7 +61218,15 @@ var version = "v1.13.1";
                                       (t.playerY = a),
                                       (t.playerDir = e.playerDir),
                                       (t.paused = e.paused),
-                                      (t.attempt = e.attempt));
+                                      (t.attempt = e.attempt),
+                                      (t.skin = Object.assign({}, e.playerSkin)),
+                                      (t.skin.trail = Object.assign({}, e.playerSkin.trail)),
+                                      (e.layout.properties.theme.id === "infinite") && ["world1", "default", "headphone"].includes(t.skin.fileName) && (t.skin.trail = {
+                                        form: "default",
+                                        topColour: getInfinitePlayerColors(e.bgColor),
+                                        bottomColour: getInfinitePlayerColors(e.bgColor),
+                                      })
+                                    );
                                   },
                                   array: () => e.playerStacks,
                                   key: (e, t) => t,
@@ -61149,8 +61407,15 @@ var version = "v1.13.1";
                           (t.playerDir = e.playerDir),
                           (t.crashed = e.crashed || e.hidePlayer),
                           (t.paused = e.paused),
-                          (t.skin = e.playerSkin),
-                          (t.touchingPortals = null !== e.touchingPortals));
+                          (t.touchingPortals = null !== e.touchingPortals),
+                          (t.skin = Object.assign({}, e.playerSkin)),
+                          (t.skin.trail = Object.assign({}, e.playerSkin.trail)),
+                          (e.layout.properties.theme.id === "infinite") && ["world1", "default", "headphone"].includes(t.skin.fileName) && (t.skin.trail = {
+                            form: "default",
+                            topColour: getInfinitePlayerColors(e.bgColor),
+                            bottomColour: getInfinitePlayerColors(e.bgColor),
+                          })
+                        );
                       },
                     ),
                   ],
