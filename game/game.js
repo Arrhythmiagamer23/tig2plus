@@ -43997,7 +43997,7 @@ var version = "v1.14.1";
                 "endOfLevel" === inViewLayout.flags[ae].role)
               )
                 ((U.finishedLevel = true),
-                  null == v || v.pauseSong(),
+                  null == v || v.fadeSong(),
                   R(true, U.checkpoint.index, null));
               else {
                 null == v || v.hitFlag();
@@ -65276,6 +65276,13 @@ var version = "v1.14.1";
             },
             pauseSong: () => {
               e.audio(a.song.fileName).pause();
+            },
+            fadeSong: () => {
+              e.audio(a.song.fileName).setVolume({
+                type: "linear",
+                fadeTime: 2,
+                fadeTo: 0,
+              });
             },
             hitFlag: () => {
               Ga("audio/levels/flag.wav", e, t, 0);
