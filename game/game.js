@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
   showcaseOnly = false;
 
-var version = "v1.13.0";
+var version = "v1.13.1";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -56756,7 +56756,7 @@ var version = "v1.13.0";
                     gl.uniform3f(g, ...finish3),
                     gl.drawArrays(gl.TRIANGLES, 0, 6));
                 },
-                bgSwitchTimer: props.bgSwitch ? 1 : 0,
+                bgSwitchTimer: props.lesserSwitch ? props.bgSwitch ? 0.7 : 0.2 : props.bgSwitch ? 1 : 0,
                 cleanup: () => {
                   (gl.deleteBuffer(o),
                     gl.deleteProgram(i),
@@ -56765,11 +56765,15 @@ var version = "v1.13.0";
               };
             },
             loop: ({ state: e, props: t }) => {
+              let min = t.lesserSwitch ? 0.2 : 0,
+              max = t.lesserSwitch ? 0.7 : 1;
+              e.bgSwitchTimer = Math.round(e.bgSwitchTimer * 10) / 10
               e &&
-                (t.bgSwitch
-                  ? e.bgSwitchTimer < 1 && (e.bgSwitchTimer += 0.1)
-                  : e.bgSwitchTimer > 0 && (e.bgSwitchTimer -= 0.1),
-                e.render(t.frame, e.bgSwitchTimer));
+                (e.render(t.frame, e.bgSwitchTimer),
+                t.bgSwitch
+                  ? e.bgSwitchTimer < max ? (e.bgSwitchTimer += 0.1) : (e.bgSwitchTimer > max && (e.bgSwitchTimer -= 0.1))
+                  : e.bgSwitchTimer > min ? (e.bgSwitchTimer -= 0.1) : (e.bgSwitchTimer < min && (e.bgSwitchTimer += 0.1))
+                );
             },
             cleanup: ({ state: e }) => {
               null == e || e.cleanup();
@@ -57931,13 +57935,14 @@ var version = "v1.13.0";
                                 id: "ShaderBg",
                                 frame: e.frame,
                                 bgSwitch:
-                                  e.switchBlockSpikes == (e.playerScale == 1),
+                                  e.switchBlockSpikes,
+                                lesserSwitch: e.playerScale < 1
                               },
                               (t) => {
                                 ((t.frame = e.frame),
                                   (t.bgSwitch =
-                                    e.switchBlockSpikes ==
-                                    (e.playerScale == 1)));
+                                    e.switchBlockSpikes),
+                                  (t.lesserSwitch = e.playerScale < 1));
                               },
                             ),
                           ];
