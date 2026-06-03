@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
   showcaseOnly = false;
 
-var version = "v1.14.2";
+var version = "v1.14.3";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -16658,7 +16658,7 @@ var version = "v1.14.2";
           }
         }
         function ce(e, t) {
-          switch (e.rotation) {
+          switch (e.rotation || 0) {
             case 0:
               return re(
                 e.x,
@@ -54786,74 +54786,105 @@ var version = "v1.14.2";
           playerTrail = makeSprite({
             render: ({ props: e, getContext }) => {
               if (!e.isFront) {
+                if (e.theme == "classic") {
+                  return [
+                    onChange(
+                        () => e.attempt,
+                        () => [
+                          playerTrailSquares.Single(
+                            {
+                              playerX: e.playerX,
+                              playerY: e.playerY,
+                              playerRot: e.playerRot,
+                              crashed: e.crashed,
+                              paused: e.paused,
+                              playerScale: e.playerScale
+                            },
+                            (t) => {
+                              (
+                                (t.playerX = e.playerX),
+                                (t.playerY = e.playerY),
+                                (t.playerRot = e.playerRot),
+                                (t.crashed = e.crashed),
+                                (t.paused = e.paused),
+                                (t.playerScale = e.playerScale)
+                              )
+                            }
+                      )
+                    ])
+                  ];
+                }
                 return [
-                  onChange(
-                    () => e.attempt,
+                  ifConditional(
+                    () => e.theme === "infinite",
                     () => [
                       onChange(
-                        () => e.touchingPortals,
+                        () => e.attempt,
                         () => [
-                          universalFlyingTrail.Single(
-                            {
-                              playerX: e.playerX,
-                              playerY: e.playerY,
-                              radius: 4 * e.playerScale,
-                              offset: 10.5 * e.playerScale,
-                              playerDir: e.playerDir,
-                              paused: e.paused,
-                              crashed: e.crashed,
-                              trail: e.skin.trail,
-                              frame: e.frame || 0,
-                              touchingPortals: e.touchingPortals,
-                            },
-                            (t) => {
-                              ((t.radius = 4 * e.playerScale),
-                                (t.offset = 10.5 * e.playerScale),
-                                (t.playerX = e.playerX),
-                                (t.playerY = e.playerY),
-                                (t.playerDir = e.playerDir),
-                                (t.paused = e.paused),
-                                (t.crashed = e.crashed),
-                                (t.trail = e.skin.trail),
-                                (t.frame = e.frame || 0),
-                                (t.touchingPortals = e.touchingPortals));
-                            },
-                          ),
-                          universalFlyingTrail.Single(
-                            {
-                              playerX: e.playerX,
-                              playerY: e.playerY,
-                              radius: 4 * e.playerScale,
-                              offset: -10.5 * e.playerScale,
-                              playerDir: e.playerDir,
-                              paused: e.paused,
-                              crashed: e.crashed,
-                              trail: e.skin.trail,
-                              frame: e.frame || 0,
-                              touchingPortals: e.touchingPortals,
-                            },
-                            (t) => {
-                              ((t.radius = 4 * e.playerScale),
-                                (t.offset = -10.5 * e.playerScale),
-                                (t.playerX = e.playerX),
-                                (t.playerY = e.playerY),
-                                (t.playerDir = e.playerDir),
-                                (t.paused = e.paused),
-                                (t.crashed = e.crashed),
-                                (t.trail = e.skin.trail),
-                                (t.frame = e.frame || 0),
-                                (t.touchingPortals = e.touchingPortals));
-                            },
+                          onChange(
+                            () => e.touchingPortals,
+                            () => [
+                              universalFlyingTrail.Single(
+                                {
+                                  playerX: e.playerX,
+                                  playerY: e.playerY,
+                                  radius: 4 * e.playerScale,
+                                  offset: 10.5 * e.playerScale,
+                                  playerDir: e.playerDir,
+                                  paused: e.paused,
+                                  crashed: e.crashed,
+                                  trail: e.skin.trail,
+                                  frame: e.frame || 0,
+                                  touchingPortals: e.touchingPortals,
+                                },
+                                (t) => {
+                                  ((t.radius = 4 * e.playerScale),
+                                    (t.offset = 10.5 * e.playerScale),
+                                    (t.playerX = e.playerX),
+                                    (t.playerY = e.playerY),
+                                    (t.playerDir = e.playerDir),
+                                    (t.paused = e.paused),
+                                    (t.crashed = e.crashed),
+                                    (t.trail = e.skin.trail),
+                                    (t.frame = e.frame || 0),
+                                    (t.touchingPortals = e.touchingPortals));
+                                },
+                              ),
+                              universalFlyingTrail.Single(
+                                {
+                                  playerX: e.playerX,
+                                  playerY: e.playerY,
+                                  radius: 4 * e.playerScale,
+                                  offset: -10.5 * e.playerScale,
+                                  playerDir: e.playerDir,
+                                  paused: e.paused,
+                                  crashed: e.crashed,
+                                  trail: e.skin.trail,
+                                  frame: e.frame || 0,
+                                  touchingPortals: e.touchingPortals,
+                                },
+                                (t) => {
+                                  ((t.radius = 4 * e.playerScale),
+                                    (t.offset = -10.5 * e.playerScale),
+                                    (t.playerX = e.playerX),
+                                    (t.playerY = e.playerY),
+                                    (t.playerDir = e.playerDir),
+                                    (t.paused = e.paused),
+                                    (t.crashed = e.crashed),
+                                    (t.trail = e.skin.trail),
+                                    (t.frame = e.frame || 0),
+                                    (t.touchingPortals = e.touchingPortals));
+                                },
+                              ),
+                            ],
                           ),
                         ],
-                      ),
-                    ],
-                  ),
-                ];
+                      )]),
+                  ];
               }
               return [
                 conditional(
-                  () => getContext(Se).settings.flyingTrail,
+                  () => e.theme == "classic" || e.theme == "infinite",
                   () => [],
                   () => [
                     playerTrailStrip.Single(
@@ -54944,6 +54975,61 @@ var version = "v1.14.2";
                 ),
               ];
             },
+          }),
+          playerTrailSquares = makeSprite({
+            init: ({props}) => ({
+              path: Array.from(
+                { length: 6 },
+                () => ({x: e.playerX, y: e.playerY, rot: e.playerRot, scale: e.playerScale, opacity: 1})
+              ),
+              frame: 0
+            }),
+            loop({state, props: e}) {
+              if (e.paused) {
+                return void 0;
+              }
+              state.path.forEach((e) => {
+                e.opacity -= 0.1;
+                e.justAdded = false;
+              })
+              state.frame++;
+              if (state.frame % 5 > 0) {
+                return void 0;
+              }
+              state.path.shift();
+              if (!e.crashed) {
+                state.path.push(
+                  {
+                    x: e.playerX, 
+                    y: e.playerY, 
+                    rot: e.playerRot,
+                    scale: e.playerScale,
+                    opacity: 1.1,
+                    justAdded: true
+                  }
+                )
+              }
+            },
+            render: ({state, props, getContext: a}) => [
+              ifConditional(
+                () => !a(Se).settings.hidePlayerTrail,
+                () => [
+                  g({
+                  props: () => ({
+                    color: "black"
+                  }), update: (t, a, i) => {
+                    t.show = !a.justAdded;
+                    t.opacity = a.opacity;
+                    t.x = a.x;
+                    t.y = a.y;
+                    t.rotation = a.rot;
+                    t.width = a.scale * 30;
+                    t.height = a.scale * 30;
+                  },
+                  array: () => state.path
+                })
+              ])
+            ]
           }),
           playerTrailStrip = makeSprite({
             init: ({ props: e, device: t }) => ({
@@ -55286,8 +55372,7 @@ var version = "v1.14.2";
               return [
                 ifConditional(
                   () =>
-                    !a(Se).settings.hidePlayerTrail &&
-                    a(Se).settings.flyingTrail,
+                    !a(Se).settings.hidePlayerTrail,
                   () => [
                     f({
                       props: () => ({
@@ -60975,7 +61060,9 @@ var version = "v1.14.2";
                             form: "default",
                             topColour: getInfinitePlayerColors(e.bgColor),
                             bottomColour: getInfinitePlayerColors(e.bgColor),
-                          })
+                          }),
+                          (t.theme = e.layout.properties.theme.id),
+                          (t.playerRot = e.playerRot)
                         );
                       },
                     ),
@@ -61175,7 +61262,9 @@ var version = "v1.14.2";
                                         form: "default",
                                         topColour: getInfinitePlayerColors(e.bgColor),
                                         bottomColour: getInfinitePlayerColors(e.bgColor),
-                                      })
+                                      }),
+                                      (t.theme = e.layout.properties.theme.id),
+                                      (t.playerRot = e.playerRot)
                                     );
                                   },
                                   array: () => e.playerStacks,
@@ -61224,7 +61313,9 @@ var version = "v1.14.2";
                                         form: "default",
                                         topColour: getInfinitePlayerColors(e.bgColor),
                                         bottomColour: getInfinitePlayerColors(e.bgColor),
-                                      })
+                                      }),
+                                      (t.theme = e.layout.properties.theme.id),
+                                      (t.playerRot = e.playerRot)
                                     );
                                   },
                                   array: () => e.playerStacks,
@@ -61413,7 +61504,9 @@ var version = "v1.14.2";
                             form: "default",
                             topColour: getInfinitePlayerColors(e.bgColor),
                             bottomColour: getInfinitePlayerColors(e.bgColor),
-                          })
+                          }),
+                          (t.theme = e.layout.properties.theme.id),
+                          (t.playerRot = e.playerRot)
                         );
                       },
                     ),
@@ -62275,7 +62368,7 @@ var version = "v1.14.2";
                     {
                       containerHeight: a.size.fullHeight - 70 + 50,
                       containerWidth: a.size.fullWidth,
-                      contentHeight: 950,
+                      contentHeight: 900,
                       y: (a.size.fullHeight - 70) / 2 + 35,
                       sprites: (o) => [
                         c({
@@ -62693,7 +62786,7 @@ var version = "v1.14.2";
                               (e.noPress = o.ref));
                           },
                         ),
-                        Rm.Single(
+                        /*Rm.Single(
                           {
                             text: '"INFINITE" TRAIL',
                             selected: false,
@@ -62710,7 +62803,7 @@ var version = "v1.14.2";
                             const { settings: a } = t(Se);
                             ((e.selected = a.flyingTrail), (e.noPress = o.ref));
                           },
-                        ),
+                        ),*/
                         Rm.Single(
                           {
                             text: "SHOW DEBUG INFO",
@@ -62722,7 +62815,7 @@ var version = "v1.14.2";
                             },
                             width: 250,
                             height: 40,
-                            y: -850,
+                            y: -800,
                           },
                           (e) => {
                             const { settings: a } = t(Se);
@@ -62742,7 +62835,7 @@ var version = "v1.14.2";
                             },
                             width: 250,
                             height: 40,
-                            y: -900,
+                            y: -850,
                           },
                           (e) => {
                             const { settings: a } = t(Se);
