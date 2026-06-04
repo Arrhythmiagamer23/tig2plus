@@ -43961,24 +43961,27 @@ var version = "v1.14.3";
             for (let e = 0; e < inViewLayout.speedChanges.length; e++) {
               const t = inViewLayout.speedChanges[e],
                 index = e,
-                a = U.playerX - t.x;
+                offsetX = U.playerX - t.x;
               if (
                 (Z(t) ||
                   (!U.isCompatible &&
                     U.playerPowerups.some((e) => e.item === "playerStack") &&
                     be.hitStack(t, U.playerX, U.playerStacks))) &&
-                ((1 === U.playerDir && a >= 0) ||
-                  (-1 === U.playerDir && a <= 0))
+                ((1 === U.playerDir && offsetX >= 0) ||
+                  (-1 === U.playerDir && offsetX <= 0))
               ) {
                 if (null === previousJustHitObject) {
+                  const isFlying = (null === (a = _.boss) || void 0 === a
+                    ? void 0
+                    : a.overrideMovement)
                   const e =
                     (1 === U.playerDir && "right" === t.direction) ||
                     (-1 === U.playerDir && "left" === t.direction);
                   (e
-                    ? (U.playerSpeedMultiplier *= 1.5)
-                    : (U.playerSpeedMultiplier /= 1.5),
-                    (U.playerX -= a),
-                    (U.playerX += a * U.playerSpeedMultiplier),
+                    ? (U.playerSpeedMultiplier *= isFlying ? 2 : 1.5)
+                    : (U.playerSpeedMultiplier /= isFlying ? 2 : 1.5),
+                    (U.playerX -= offsetX),
+                    (U.playerX += offsetX * U.playerSpeedMultiplier),
                     null == v || v.hitSpeedChange(U.playerSpeedMultiplier, e));
                 }
                 U.justHitObject = { array: "speedChanges", index: index };
@@ -46122,7 +46125,7 @@ var version = "v1.14.3";
             { x: 33260, y: 124, width: 10, height: 8, index: 140 },
             { x: 33277, y: 96, width: 10, height: 8, index: 141 },
           ],
-          Al = function () {
+          getRobotBoss = function () {
             return {
               mutatesState: true,
               fileNames: {
@@ -46462,7 +46465,7 @@ var version = "v1.14.3";
               },
             };
           },
-          Nl = function () {
+          getFlyingBoss = function () {
             return {
               mutatesState: false,
               fileNames: {
@@ -46516,7 +46519,7 @@ var version = "v1.14.3";
                           2 * df * ((5 + bl - playerY) / levelSpeed)),
                         (playerY = B.clamp2(Sl, bl, playerY)))
                       : (playerY = bl),
-                  frame > 2600 && (playerX += levelSpeed * df),
+                  // frame > 2600 && (playerX += levelSpeed * df),
                   { playerX: playerX, playerY: playerY, jumping: jumping }
                 );
               },
@@ -46570,16 +46573,18 @@ var version = "v1.14.3";
                 df: i,
                 playSound: n,
                 crashed: s,
+                playerY,
               }) => {
                 const o = 3937;
-                let r = s
+                s && e.playerDestroyed && !e.destroyed && ((n("audio/levels/boss3/death.wav")), (e.destroyed = true));
+                let r = s && !e.playerDestroyed
                   ? e.bossX + 6.6
                   : a > o
                     ? t +
-                      300 *
+                      Math.max(0, 300 *
                         (function (e, t, a) {
                           return 1 - (a - 3937) / 1475;
-                        })(0, 0, a)
+                        })(0, 0, a))
                     : t + 300;
                 for (const t of e.bullets)
                   t.x += s ? Math.min(-3, t.speed) : t.speed;
@@ -46658,11 +46663,13 @@ var version = "v1.14.3";
                     ? ((e.bossY += 2 * i * ((-5 + Sl - e.bossY) / 6)),
                       (e.bossY = B.clamp2(Sl, bl, e.bossY)))
                     : (e.bossY = Sl),
-                  r < t + 38 &&
-                    !e.destroyed &&
-                    (n("audio/levels/boss3/death.wav"), (e.destroyed = true)),
-                  e.shootFrames > 0 && (e.shootFrames -= i),
-                  e.destroyed || (e.bossX = r));
+                    r < t + 38 &&
+                    !e.playerDestroyed &&
+                    ((e.playerDestroyed = true)),
+                    e.shootFrames > 0 && (e.shootFrames -= i),
+                    (e.playerDestroyed && (e.bossY = playerY)),
+                    e.destroyed || (e.bossX = r)
+                );
               },
               crashed: ({ playerX: e, playerY: t, bossState: a }) => {
                 let i = false;
@@ -46710,7 +46717,7 @@ var version = "v1.14.3";
               },
             };
           },
-          xl = function () {
+          getDemonBoss = function () {
             return {
               fileNames: {
                 images: [],
@@ -46978,7 +46985,7 @@ var version = "v1.14.3";
               ],
               maxFrames: 5647,
               difficulty: 4,
-              boss: Al(),
+              boss: getRobotBoss(),
             },
           ],
           Bl = [
@@ -47124,7 +47131,7 @@ var version = "v1.14.3";
               ],
               maxFrames: 5460,
               difficulty: 5,
-              boss: Nl(),
+              boss: getFlyingBoss(),
             },
           ],
           Yl = [
@@ -47195,7 +47202,7 @@ var version = "v1.14.3";
               ],
               maxFrames: 5597,
               difficulty: 6,
-              boss: xl(),
+              boss: getDemonBoss(),
             },
           ],
           world5levels = [
@@ -61059,7 +61066,7 @@ var version = "v1.14.3";
                             ((t.playerX = e.playerX),
                               (t.playerY = e.playerY),
                               (t.playerDir = e.playerDir),
-                              (t.crashed = e.crashed),
+                              (t.crashed = e.crashed || e.bossState?.playerDestroyed),
                               (t.paused = e.paused),
                               (t.frame = e.frame),
                               (t.df = e.df));
@@ -61126,7 +61133,7 @@ var version = "v1.14.3";
                   () => !e.hidePlayer,
                   () => [
                     conditional(
-                      () => e.crashed,
+                      () => e.crashed || e.bossState?.playerDestroyed,
                       () => [
                         qa.Single(
                           {
