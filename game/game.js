@@ -47075,7 +47075,6 @@ var version = "v1.14.4";
               ],
               maxFrames: 8407,
               difficulty: 4,
-              comingSoon: true,
             },
             {
               levelName: "Super Ultra",
