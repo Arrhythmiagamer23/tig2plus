@@ -45187,6 +45187,12 @@ var version = "v1.14.5";
                 bpm: 150,
                 isBonusSong: false,
               },
+              rockinThatBass: {
+                name: "Rockin' That Bass",
+                author: "MrCoolTrix",
+                bpm: 130,
+                fileName: "audio/tracks/mrcooltrix-rockin-that-bass.mp3"
+              },
               thinkDifferent: {
                 name: "Think Different",
                 author: "Panda Eyes & Gabriel Guardian",
@@ -45273,6 +45279,12 @@ var version = "v1.14.5";
                 bpm: 130,
                 isBonusSong: false,
               },
+              silverdust: {
+                name: "Silverdust",
+                author: "Geoxor",
+                fileName: "audio/tracks/geoxor-silverdust.mp3",
+                bpm: 140,
+              },
               lighthouse: {
                 name: "Lighthouse",
                 author: "Ghost'n'Ghost",
@@ -45331,6 +45343,12 @@ var version = "v1.14.5";
                 bpm: 105,
                 isBonusSong: false,
               },
+              color: {
+                name: "Color",
+                author: "Amidst",
+                fileName: "audio/tracks/amidst-color.mp3",
+                bpm: 130,
+              },
               awake: {
                 name: "Awake",
                 author: "Amidst",
@@ -45339,13 +45357,6 @@ var version = "v1.14.5";
                 label: "Argofox",
                 isBonusSong: false,
               },
-              color: {
-                name: "Color",
-                author: "Amidst",
-                fileName: "audio/tracks/amidst-color.mp3",
-                bpm: 130,
-              },
-
               coincidence: {
                 name: "Coincidence",
                 author: "3b",
@@ -45396,12 +45407,33 @@ var version = "v1.14.5";
                 bpm: 165,
                 isBonusSong: true,
               },
+              clutterfunk: {
+                name: "Clutterfunk",
+                author: "Waterflame",
+                fileName: "audio/tracks/waterflame-clutterfunk.mp3",
+                bpm: 140,
+              },
+              soulless2: {
+                name: "Mechanical Machine (Soulless 2)",
+                author: "Exilelord",
+                fileName: "audio/tracks/exilelord-mechanical-machine.mp3",
+                bpm: 125,
+                length: "5 mins",
+                isBonusSong: true,
+              },
               cloud9: {
                 name: "Cloud 9",
                 author: "Valesco",
                 fileName: "audio/tracks/valesco-cloud-9.mp3",
                 bpm: 140,
                 label: "Argofox",
+                isBonusSong: true,
+              },
+              virtual: {
+                name: "Virtual",
+                author: "Geoxor",
+                fileName: "audio/tracks/geoxor-virtual.mp3",
+                bpm: 128,
                 isBonusSong: true,
               },
               aura: {
@@ -45426,19 +45458,18 @@ var version = "v1.14.5";
                 bpm: 201,
                 isBonusSong: true,
               },
+              rummy: {
+                name: "Rum n' Bass",
+                author: "BoomKitty",
+                fileName: "audio/tracks/boomkitty-rum-and-bass.mp3",
+                bpm: 132,
+                isBonusSong: true,
+              },
               forYou: {
                 name: "For You (+ Waterfall mashup)",
                 author: "ColBreakz & EXODIE, SkybreakEDM",
                 fileName: "audio/tracks/colbreakz-for-you.mp3",
                 bpm: 145,
-                isBonusSong: true,
-              },
-
-              virtual: {
-                name: "Virtual",
-                author: "Geoxor",
-                fileName: "audio/tracks/geoxor-virtual.mp3",
-                bpm: 128,
                 isBonusSong: true,
               },
 
@@ -45449,36 +45480,12 @@ var version = "v1.14.5";
                 bpm: 132,
                 isBonusSong: false,
               },
-              silverdust: {
-                name: "Silverdust",
-                author: "Geoxor",
-                fileName: "audio/tracks/geoxor-silverdust.mp3",
-                bpm: 140,
-                isBonusSong: true,
-              },
-
-              soulless2: {
-                name: "Mechanical Machine (Soulless 2)",
-                author: "Exilelord",
-                fileName: "audio/tracks/exilelord-mechanical-machine.mp3",
-                bpm: 125,
-                length: "5 mins",
-                isBonusSong: true,
-              },
               piratemanners: {
                 name: "Pirate Manners",
                 author: "Bossfight",
                 fileName: "audio/tracks/bossfight-pirate-manners.mp3",
                 bpm: 116,
                 isBonusSong: false,
-              },
-
-              rummy: {
-                name: "Rum n' Bass",
-                author: "BoomKitty",
-                fileName: "audio/tracks/boomkitty-rum-and-bass.mp3",
-                bpm: 132,
-                isBonusSong: true,
               },
 
               orientalSwing: {
@@ -45507,18 +45514,14 @@ var version = "v1.14.5";
                 fileName: "audio/tracks/dex-arson-machina.mp3",
                 bpm: 125,
               },
-              clutterfunk: {
-                name: "Clutterfunk",
-                author: "Waterflame",
-                fileName: "audio/tracks/waterflame-clutterfunk.mp3",
-                bpm: 140,
-              },
+              
               soulless4: {
                 name: "Soulless 4",
                 author: "Exilelord",
                 fileName: "audio/tracks/exilelord-soulless-4.mp3",
                 bpm: 125,
                 length: "12 mins",
+                isBonusSong: true,
               },
               zenith: {
                 name: "Zenith",
@@ -49257,6 +49260,7 @@ var version = "v1.14.5";
             e[(e.DryOut = 63)] = "DryOut";
             e[(e.Carnivores = 64)] = "Carnivores";
             e[(e.Phobos = 65)] = "Phobos";
+            e[(e.RockinThatBass = 66)] = "RockinThatBass";
           })(Nd || (Nd = {})),
           (function (e) {
             ((e[(e.World1 = 0)] = "World1"),
@@ -50219,7 +50223,8 @@ var version = "v1.14.5";
             [Nd.RobotLanguage]: hl.songs.robotLanguage,
             [Nd.DryOut]: hl.songs.dryOut,
             [Nd.Carnivores]: hl.songs.carnivores,
-            [Nd.Phobos]: hl.songs.phobos
+            [Nd.Phobos]: hl.songs.phobos,
+            [Nd.RockinThatBass]: hl.songs.rockinThatBass,
           },
           Hd = {
             [ld.Rot0]: 0,
