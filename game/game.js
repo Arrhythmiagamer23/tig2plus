@@ -61245,7 +61245,7 @@ var version = "v1.15.0";
                   }),
                   update: (a, t) => {
                     a.x = t.state.playerX;
-                    a.y = t.state.playerY + 15;
+                    a.y = t.state.playerY + 15 + (-15 * t.state.playerScale) + 15;
                   },
                   array: () => e.checkpoints,
                 }),
