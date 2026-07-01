@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
   showcaseOnly = false;
 
-var version = "v1.14.5";
+var version = "v1.15.0";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -31155,6 +31155,7 @@ var version = "v1.14.5";
               "images/themes/infinite/menu-button-pressed.png",
               "images/level/arrow-up.png",
               "images/level/arrow-down-stroke.png",
+              "images/level/flag.png",
               "images/achievement/rewards/autopilot.png",
               "images/achievement/rewards/missiles.png",
               "images/achievement/rewards/slowmo.png",
@@ -43386,11 +43387,13 @@ var version = "v1.14.5";
                   ),
                 0 === L.resetTimer && N)
               ) {
+                const lastCheckpointState = L.checkpoints.at(-1)?.state || {};
+                const useCheckpointState = (lastCheckpointState?.frame || 0) > (U.checkpoint?.state?.frame || 0);
                 const e = Zr(
                   _.layout,
                   _.boss,
                   F,
-                  U.checkpoint.state,
+                  useCheckpointState ? lastCheckpointState : U.checkpoint.state,
                   null == v ? void 0 : v.playSound,
                   null == v ? void 0 : v.pauseSound,
                 );
@@ -43414,11 +43417,11 @@ var version = "v1.14.5";
                     e.fallTypes,
                   ),
                   (e.attempt = U.attempt + 1),
-                  (e.checkpoint = {
+                  (useCheckpointState || (e.checkpoint = {
                     index: U.checkpoint.index,
                     state: tl(e, _.boss),
-                  }),
-                  (L.levelState = e),
+                  })),
+                  (L.levelState = tl(e, _.boss)),
                   (L.blockJumpUntilReleased = false),
                   (L.landTimer = 0),
                   (L.resetTimer = null),
@@ -60205,7 +60208,7 @@ var version = "v1.14.5";
                     playerDir: t.playerDir,
                     playerScaleX: t.playerScaleX,
                     playerScaleY: t.playerScaleY,
-
+                    checkpoints: t.checkpoints,
                     playerPowerups: t.playerPowerups,
                     isCompatible: t.isCompatible,
                     playerPowerupOut: t.playerPowerupOut,
@@ -61231,6 +61234,20 @@ var version = "v1.14.5";
                     a.rotation = e.frame;
                   },
                   array: () => e.boosterDebug ? e.boosterDebug.jumpIndicators : [],
+                }),
+                imageArray({
+                  fileName: "images/level/flag.png",
+                  props: (t) => ({
+                    width: 30,
+                    height: 60,
+                    x: t.x,
+                    y: t.y + 15,
+                  }),
+                  update: (a, t) => {
+                    a.x = t.state.playerX;
+                    a.y = t.state.playerY + 15;
+                  },
+                  array: () => e.checkpoints,
                 }),
                 ifConditional(
                   () => !e.hidePlayer,
@@ -63150,6 +63167,8 @@ var version = "v1.14.5";
             loop({ props: e, getInputs: t, device: a }) {
               let keysPressed = t().keysJustPressed
               keysPressed.Escape && (e.paused ? e.onResume() : e.onPause());
+              keysPressed.z && (e.addCheckpoint());
+              keysPressed.x && (e.removeCheckpoint());
               keysPressed.r && e.onReset && ((e.paused || e.onPause()), true) && a.alert.okCancel(
                               localize(
                                 "Are you sure you want to return to the beginning?",
@@ -63189,6 +63208,55 @@ var version = "v1.14.5";
                         (isSpecialTheme(t.theme) ? 25 : 50)));
                   },
                 ),
+                ifConditional(
+                  () => !i(Se).settings.hideUi,
+                  () => [
+                    Yo.Single(
+                      {
+                        text: localize("FLAG"),
+                        onPress: () => {
+                          (e.addCheckpoint());
+                        },
+                        width: Pm,
+                        height: Mm,
+                        x:
+                          Mm / -2,
+                        y: a.size.fullHeight / -2 + 40,
+                      },
+                      (e) => {
+                        ((e.x = Mm / -2),
+                          (e.y = a.size.fullHeight / -2 + 40));
+                      },
+                    ),
+                    Yo.Single(
+                      {
+                        text: "<",
+                        onPress: () => {
+                          (e.removeCheckpoint());
+                        },
+                        width: Mm,
+                        height: Mm,
+                        x:
+                          Pm / 2,
+                        y: a.size.fullHeight / -2 + 40,
+                      },
+                      (e) => {
+                        ((e.x = Pm / 2),
+                          (e.y = a.size.fullHeight / -2 + 40));
+                      },
+                    ),
+                  ]
+                ),
+                c({
+                  text: localize(`PRACTICE MODE`),
+                  font: { size: 15 },
+                  color: Ve,
+                  x: 0,
+                  y: a.size.fullHeight / -2 + 10,
+                  hidden: true
+                }, (t) => {
+                  t.opacity = +e.isPractice
+                }),
                 ifConditional(
                   () => void 0 !== e.boosters,
                   () => [
@@ -64142,7 +64210,7 @@ var version = "v1.14.5";
           mf = function (e) {};
         const ff = makeSprite({
           init({ getContext: e, device: t, props: a }) {
-            if ((t.audio("audio/levels/level-complete.wav").play(0), a.world)) {
+            if ((t.audio("audio/levels/level-complete.wav").play(0), a.world && a.checkpoints.length == 0)) {
               const { online: i, achievementUnlocked: n } = e(Se),
                 { world: s, collectibles: o, score: r } = a;
               i
@@ -64248,8 +64316,8 @@ var version = "v1.14.5";
                         c({
                           testId: "FinishLevel",
                           font: { size: 50 },
-                          text: "LEVEL COMPLETE!",
-                          strokeColor: Ye,
+                          text: localize(e.checkpoints.length > 0 ? "PRACTICE COMPLETE!" : "LEVEL COMPLETE!"),
+                          strokeColor: e.checkpoints.length > 0 ? Ve : Ye,
                           color: ve,
                           strokeThickness: 16,
                           y: 120,
@@ -64581,6 +64649,7 @@ var version = "v1.14.5";
                     landTimer: 0,
                     layoutFirstIndexes: m,
                     resetTimer: null,
+                    checkpoints: []
                   },
                   bigMutValues: {
                     inViewLayout: f,
@@ -64856,6 +64925,21 @@ var version = "v1.14.5";
                       Mm,
                       f.pointer.x,
                       f.pointer.y,
+                    )) ||
+                    (be.pointInBox2(
+                      Mm / -2,
+                      a.size.fullHeight / -2 + 40,
+                      Pm,
+                      Mm,
+                      f.pointer.x,
+                      f.pointer.y,
+                    )) || (be.pointInBox2(
+                      Pm / 2,
+                      a.size.fullHeight / -2 + 40,
+                      Mm,
+                      Mm,
+                      f.pointer.x,
+                      f.pointer.y,
                     )),
                 N = Pl(w, A),
                 x =
@@ -65089,11 +65173,14 @@ var version = "v1.14.5";
                       t.mutValues.levelState.justDownInputTimer,
                     jumping: t.mutValues.levelState.jumping,
                     levelSpeeds: t.levelSpeeds,
+                    checkpoints: t.mutValues.checkpoints
                   },
 
                   (a) => {
                     var i, n, s, o, r;
-                    ((a.justDownInputTimer =
+                    (
+                      (a.checkpoints = t.mutValues.checkpoints),
+                      (a.justDownInputTimer =
                       t.mutValues.levelState.justDownInputTimer),
                       (a.levelSpeeds = t.levelSpeeds),
                       (a.boosterDebug = t.mutValues.levelState.boosterDebug),
@@ -65246,6 +65333,18 @@ var version = "v1.14.5";
                         fadeOutAttempts:
                           Ml(t.mutValues.levelState.bossState) ||
                           i(Se).settings.fadeOutAttempts,
+                        addCheckpoint: () => {
+                          if (!t.mutValues.levelState.crashed) {
+                            t.mutValues.checkpoints.push({
+                              state: tl(t.mutValues.levelState, e.level.boss)
+                            })
+                          }
+                        },
+                        removeCheckpoint: () => {
+                          if (t.mutValues.checkpoints.length > 1) {
+                            t.mutValues.checkpoints.pop()
+                          }
+                        },
                         onResume: () => {
                           if (
                             ((t.paused = false),
@@ -65322,6 +65421,7 @@ var version = "v1.14.5";
                             (t.mutValues.blockJumpUntilReleased = false),
                             (t.paused = false),
                             (t.mutValues.landTimer = 0),
+                            (t.mutValues.checkpoints.length = 0),
                             (t.playerInputIsDown = false),
                             (t.hasStarted = true),
                             (t.mutValues.resetTimer = null),
@@ -65372,6 +65472,9 @@ var version = "v1.14.5";
                               })
                           : (a.boosters = void 0),
                           (a.paused = t.paused),
+                          (a.hideUi = n.hideUi),
+                          (a.isPractice = t.mutValues.checkpoints.length > 0),
+                          (console.log(t.mutValues.checkpoints.length)),
                           (a.attempt = t.mutValues.levelState.attempt),
                           a.crashed || (a.frame = t.mutValues.levelState.frame),
                           (a.theme =
@@ -65416,6 +65519,7 @@ var version = "v1.14.5";
                               t.call(e, true);
                         },
                         world: e.world,
+                        checkpoints: t.mutValues.checkpoints
                       }),
                     ];
                   },
@@ -68841,6 +68945,8 @@ var version = "v1.14.5";
                   importLevel: p,
                 }),
               ];
+            if ("userlevels" === t.view)
+              return []
             const g = () => {
               i((e) =>
                 Object.assign(Object.assign({}, e), {
@@ -74471,6 +74577,7 @@ var version = "v1.14.5";
                   landTimer: 0,
                   resetTimer: null,
                   layoutFirstIndexes: Ca.getInitFirstIndexes(),
+                  checkpoints: [],
                 },
                 frameOffset: st(-5, 5, Math.random),
                 atNextCheckpoint: false,
@@ -74799,7 +74906,9 @@ var version = "v1.14.5";
                       },
                       otherPlayersInfo: p,
                     } = e;
-                    ((a.isGravity = r.isGravity),
+                    (
+                      (a.checkpoints = e.viewingPlayer.state.mutValues.checkpoints),
+                      (a.isGravity = r.isGravity),
                       (a.flyingAnchor = r.flyingAnchor),
                       (a.dashing = r.dashing),
                       (a.fallTypes = r.fallTypes),
