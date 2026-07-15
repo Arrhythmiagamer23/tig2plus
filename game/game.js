@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
   showcaseOnly = false;
 
-var version = "v1.15.0";
+var version = "v1.15.1";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -19049,7 +19049,7 @@ var version = "v1.15.0";
         }
         var overlapObjects = false,
           mirrorMenuButton = false,
-          alternativeMenuMusic = localStorage.getItem("tig1-music") == "true";
+          alternativeMenuMusic = false;
         const xa = {
           getInitState: function (e, t, i) {
             return {
@@ -62561,7 +62561,7 @@ var version = "v1.15.0";
                     {
                       containerHeight: a.size.fullHeight - 70 + 50,
                       containerWidth: a.size.fullWidth,
-                      contentHeight: 900,
+                      contentHeight: 850,
                       y: (a.size.fullHeight - 70) / 2 + 35,
                       sprites: (o) => [
                         c({
@@ -62902,26 +62902,6 @@ var version = "v1.15.0";
                         ),
                         Rm.Single(
                           {
-                            text: "TIG1 MENU MUSIC",
-                            selected: false,
-                            onPress: () => {
-                              alternativeMenuMusic = !alternativeMenuMusic;
-                              localStorage.setItem(
-                                "tig1-music",
-                                alternativeMenuMusic,
-                              );
-                            },
-                            width: 250,
-                            height: 40,
-                            y: -600,
-                          },
-                          (e) => {
-                            ((e.selected = alternativeMenuMusic),
-                              (e.noPress = o.ref));
-                          },
-                        ),
-                        Rm.Single(
-                          {
                             text: "MIRROR MENU BUTTON",
                             selected: false,
                             onPress: () => {
@@ -62932,7 +62912,7 @@ var version = "v1.15.0";
                             },
                             width: 250,
                             height: 40,
-                            y: -650,
+                            y: -600,
                           },
                           (e) => {
                             const { settings: a } = t(Se);
@@ -62952,7 +62932,7 @@ var version = "v1.15.0";
                             },
                             width: 250,
                             height: 40,
-                            y: -700,
+                            y: -650,
                           },
                           (e) => {
                             const { settings: a } = t(Se);
@@ -62971,7 +62951,7 @@ var version = "v1.15.0";
                             },
                             width: 250,
                             height: 40,
-                            y: -750,
+                            y: -700,
                           },
                           (e) => {
                             const { settings: a } = t(Se);
@@ -62990,7 +62970,7 @@ var version = "v1.15.0";
                             },
                             width: 250,
                             height: 40,
-                            y: -800,
+                            y: -750,
                           },
                           (e) => {
                             const { settings: a } = t(Se);
@@ -63008,7 +62988,7 @@ var version = "v1.15.0";
                             },
                             width: 250,
                             height: 40,
-                            y: -800,
+                            y: -750,
                           },
                           (e) => {
                             const { settings: a } = t(Se);
@@ -63028,7 +63008,7 @@ var version = "v1.15.0";
                             },
                             width: 250,
                             height: 40,
-                            y: -850,
+                            y: -800,
                           },
                           (e) => {
                             const { settings: a } = t(Se);
@@ -73379,7 +73359,7 @@ var version = "v1.15.0";
                     } else {
                       LANG = "";
                     }
-                    localStorage.setItem("lang", LANG);
+                    a.storage.setItem("lang", LANG);
                   },
                   y: s - 200,
                 }),
@@ -73394,7 +73374,7 @@ var version = "v1.15.0";
                         "This PERMANENTLY erases the run history from your created levels. ONLY DO THIS if you are running out of storage or have corrupted levels.",
                       )
                     ) {
-                      localStorage.removeItem("savedLevelsSettings");
+                     a.storage.setItem("savedLevelsSettings");
                     }
                   },
                   y: s - 250,
@@ -73742,20 +73722,19 @@ var version = "v1.15.0";
               ];
             },
           });
-        const eE = () => G.getJumpFrames(alternativeMenuMusic ? 150 : 114),
+        const eE = () => G.getJumpFrames(114),
           tE = makeCustomSprite({
             init({
               preloadFiles: e,
-              updateState: t,
+              updateState: updateState,
               device: a,
               props: i,
               getContext: n,
             }) {
               const s =
-                  localStorage.getItem("endOfGame") ||
                   ("credits" === i.view.type && i.view.endOfGame),
-                o = `audio/tracks/${alternativeMenuMusic && !s ? "rustic-runes" : "monstaz-popcorn-funk"}${
-                  !alternativeMenuMusic && s ? "-credits" : ""
+                o = `audio/tracks/monstaz-popcorn-funk${
+                  s ? "-credits" : ""
                 }.mp3`;
               return (
                 e({
@@ -73768,14 +73747,13 @@ var version = "v1.15.0";
                 }).then(() => {
                   const { settings: e } = n(Se);
                   ((e.muteMenuMusic &&
-                    !s &&
-                    !localStorage.getItem("endOfGame")) ||
+                    !s) ||
                     a.audio(o).play({ loop: true, overwrite: true }),
-                    t((e) =>
+                    updateState((e) =>
                       Object.assign(Object.assign({}, e), { loading: false }),
                     ));
                 }),
-                { loading: true, frame: 0, modal: null, menuMusicFile: o }
+                { loading: true, frame: 0, modal: null, menuMusicFile: o, readNews: true }
               );
             },
             loop({ state: e }) {
@@ -73841,7 +73819,7 @@ var version = "v1.15.0";
                 ];
               }
               if ("main" === o.type) {
-                const a = "requestingAuth" === d.type || "signingIn" === d.type,
+                const isLoggingIn = "requestingAuth" === d.type || "signingIn" === d.type,
                   o = "loggedIn" === d.type && "anon" !== d.auth,
                   { online: c } = i(Se),
                   u = Math.max(120, f / 2 - 180),
@@ -78573,7 +78551,6 @@ var version = "v1.15.0";
                               (d = "noCheckpoints")),
                             a(
                               (t) => (
-                                localStorage.setItem("endOfGame", d),
                                 Object.assign(Object.assign({}, t), {
                                   view: {
                                     type: "level",
