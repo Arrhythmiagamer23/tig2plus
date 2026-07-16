@@ -45242,12 +45242,11 @@ var version = "v1.15.1";
                 label: "Argofox",
                 isBonusSong: false,
               },
-
-              superUltra: {
-                name: "Super Ultra",
-                author: "MDK",
-                fileName: "audio/tracks/mdk-super-ultra.mp3",
-                bpm: 172,
+              milkyWays: {
+                name: "Milky Ways",
+                author: "Bossfight",
+                fileName: "audio/tracks/bossfight-milky-ways.mp3",
+                bpm: 183,
                 isBonusSong: false,
               },
               darkSheep: {
@@ -45534,7 +45533,13 @@ var version = "v1.15.1";
                 fileName: "audio/tracks/geoxor-zenith.mp3",
                 bpm: 128,
               },
-
+              superUltra: {
+                name: "Super Ultra",
+                author: "MDK",
+                fileName: "audio/tracks/mdk-super-ultra.mp3",
+                bpm: 172,
+                isBonusSong: false,
+              },
               funkyPunky: {
                 name: "Funky Punky",
                 author: "Grge & Antian Rose",
@@ -47091,9 +47096,9 @@ var version = "v1.15.1";
               difficulty: 4,
             },
             {
-              levelName: "Super Ultra",
-              levelFileName: "super-ultra",
-              song: hl.songs.superUltra,
+              levelName: "Milky Ways",
+              levelFileName: "milky-ways",
+              song: hl.songs.milkyWays,
               unlockedByIndex: 1,
               x: -110,
               y: -100,
@@ -49264,6 +49269,7 @@ var version = "v1.15.1";
             e[(e.Carnivores = 64)] = "Carnivores";
             e[(e.Phobos = 65)] = "Phobos";
             e[(e.RockinThatBass = 66)] = "RockinThatBass";
+            e[(e.MilkyWays = 67)] = "MilkyWays";
           })(Nd || (Nd = {})),
           (function (e) {
             ((e[(e.World1 = 0)] = "World1"),
@@ -50228,6 +50234,7 @@ var version = "v1.15.1";
             [Nd.Carnivores]: hl.songs.carnivores,
             [Nd.Phobos]: hl.songs.phobos,
             [Nd.RockinThatBass]: hl.songs.rockinThatBass,
+            [Nd.MilkyWays]: hl.songs.milkyWays
           },
           Hd = {
             [ld.Rot0]: 0,
@@ -64162,7 +64169,7 @@ var version = "v1.15.1";
                     return Hm;
                   case "Glitched Out":
                     return Xm;
-                  case "Super Ultra":
+                  case "Milky Ways":
                     return zm;
                   case "Critical Hit (Extended)":
                     return Wm;
