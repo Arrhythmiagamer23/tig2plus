@@ -45385,12 +45385,13 @@ var version = "v1.15.1";
                 bpm: 172,
                 isBonusSong: false,
               },
-              // official order: carnival, fire aura, heaven, minds of mad, phobos
-              carnival: {
-                name: "Carnival",
-                author: "DJVI",
-                bpm: 128,
-                fileName: "audio/tracks/djvi-carnival.mp3",
+              // official order: red shift, fire aura, heaven, minds of mad, phobos 
+              redShift: {
+                name: "Red Shift",
+                author: "Cubed",
+                fileName: "audio/tracks/cubed-red-shift.mp3",
+                bpm: 150,
+                isBonusSong: true,
               },
               fireAura: {
                 name: "Fire Aura",
@@ -45513,13 +45514,6 @@ var version = "v1.15.1";
                 bpm: 125,
                 isBonusSong: false,
               },
-              redShift: {
-                name: "Red Shift",
-                author: "Cubed",
-                fileName: "audio/tracks/cubed-red-shift.mp3",
-                bpm: 150,
-                isBonusSong: true,
-              },
               clutterfunk: {
                 name: "Clutterfunk",
                 author: "Waterflame",
@@ -45611,6 +45605,12 @@ var version = "v1.15.1";
                 author: "TheFatRat",
                 bpm: 103,
                 fileName: "audio/tracks/the-fat-rat-jackpot.mp3",
+              },
+              carnival: {
+                name: "Carnival",
+                author: "DJVI",
+                bpm: 128,
+                fileName: "audio/tracks/djvi-carnival.mp3",
               },
               robotLanguage: {
                 name: "Robot Language",
