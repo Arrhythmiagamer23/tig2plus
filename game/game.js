@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
   showcaseOnly = false;
 
-var version = "v1.15.1";
+var version = "v1.15.2";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -66015,6 +66015,25 @@ var version = "v1.15.1";
                       strokeColor: Ye,
                       x: 280,
                     }),
+                    document.fullscreenEnabled
+                    ? vo({
+                        id: "FullScreen",
+                        fullScreen: true,
+                        onPress: () => {
+                          if (document.fullscreenElement) {
+                            document.exitFullscreen();
+                          } else {
+                            document.documentElement
+                              .requestFullscreen()
+                              .catch((e) => {
+                                throw e;
+                              });
+                          }
+                        },
+                        x: e.size.fullWidth / 2 - 40,
+                        y: e.size.fullHeight / 2 - 40,
+                      })
+                    : null
                   ];
             },
           }),
