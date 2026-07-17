@@ -58448,7 +58448,7 @@ var version = "v1.15.2";
                               },
                             ),
                           ];
-                          case "world6":
+                        case "world6":
                           return [
                             Go.Single(
                               {
@@ -58476,23 +58476,6 @@ var version = "v1.15.2";
                                 t.targetColor = e.bgColor || "#006eff";
                               },
                             ),
-                            rg.Array({
-                              props: (e) => ({
-                                moveX: 0,
-                                moveY: 0,
-                                element: e,
-                                halfDeviceHeight: t.size.fullHeight / 2,
-                                halfDeviceWidth: t.size.fullWidth / 2,
-                              }),
-                              update: (a, i) => {
-                                ((a.moveX = e.cameraX * i.speed),
-                                  (a.moveY = e.cameraY * i.speed),
-                                  (a.halfDeviceHeight = t.size.fullHeight / 2),
-                                  (a.halfDeviceWidth = t.size.fullWidth / 2));
-                              },
-                              array: () => a,
-                              key: (e, t) => t,
-                            }),
                             dg.Single(
                               {
                                 fileName:
