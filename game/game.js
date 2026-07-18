@@ -30957,7 +30957,7 @@ var version = "v1.15.2";
                   ]
                 : []),
               ...("world3" === e.objects.bottom ||
-              "classic" === e.objects.bottom
+              "classic" === e.objects.bottom || "world6" === e.objects.bottom
                 ? [
                     "images/themes/world3/bottom/laser-line.png",
                     "images/themes/world3/bottom/block.png",
